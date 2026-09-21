@@ -40,12 +40,12 @@ powershell -ExecutionPolicy Bypass -File .\start.ps1
 
 前端 http://127.0.0.1:5173，后端 API http://127.0.0.1:8000。
 
-首次运行前按 `car-live-deployment-v3/backend/.env.example` 创建 `backend/.env`，填写大模型接口（`LLM_BASE_URL`／`LLM_MODEL`／`LLM_API_KEY`）与 TTS 服务地址；已有密钥留空即保留原值。
+首次运行前按 `car-live-deployment-v3/backend/.env.example` 创建 `backend/.env`，填写大模型接口（`LLM_BASE_URL`／`LLM_MODEL`／`LLM_API_KEY`）与 TTS 服务地址。也可以在启动后进入「模型接口」页面填写并保存，页面保存时已有密钥留空即保留原值，且不回显。
 
 完整说明见 `car-live-deployment-v3/README.md`、`car-live-deployment-v3/QUICK_START.md` 与 `car-live-deployment-v3/DEPLOYMENT.md`。
 
 ## 关于本仓库
 
-- 两个子项目各自保持独立目录结构，只包含各自 Git 已跟踪的源码与文档。
-- 模型权重、虚拟环境、运行日志、数据库、上传数据等未跟踪内容不随本仓库分发；运行依赖本机的 IndexTTS、GPT-SoVITS、Live2D 模型等环境，需按各项目文档在本地准备。
+- 两个子项目各自保持独立目录结构，只包含各自 Git 已跟踪的文件：源码、文档，以及少量随项目跟踪的模型资源与示例数据。
+- 未跟踪的模型权重、虚拟环境、运行日志、数据库、上传数据不随本仓库分发；运行依赖本机的 IndexTTS、GPT-SoVITS 等模型环境，需按各项目文档在本地准备。
 - 仓库不包含任何密钥；需要凭据的服务请自行配置本地 `.env`。
