@@ -1,0 +1,28 @@
+{
+  "original": "从30%充到80%需要0.33小时[2]。",
+  "spoken": "从百分之三十充到百分之八十需要零点三三小时。",
+  "stream_request_seconds": 2.4,
+  "results": [
+    {
+      "endpoint": "synthesize",
+      "status": 200,
+      "file": "preview.wav",
+      "bytes": 256044,
+      "sample_rate": 32000,
+      "duration_seconds": 4.0
+    },
+    {
+      "endpoint": "stream",
+      "status": 200,
+      "file": "live.wav",
+      "bytes": 256044,
+      "sample_rate": 32000,
+      "duration_seconds": 4.0
+    }
+  ],
+  "checks": {
+    "backend_tests_passed": 100,
+    "frontend_tests_passed": 17,
+    "frontend_syntax": "passed"
+  }
+}

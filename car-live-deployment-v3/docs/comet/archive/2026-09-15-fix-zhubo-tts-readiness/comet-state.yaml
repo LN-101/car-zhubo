@@ -1,0 +1,311 @@
+schema: comet.native.v4
+name: fix-zhubo-tts-readiness
+language: en
+phase: archive
+status: done
+state_version: 11
+brief: brief.md
+shape_confirmation_hash: d79bd2faa64f067a0cf68fee43baa3bd89e17344cb676e4aa311afa50aae6e87
+spec_changes:
+  - capability: tts-readiness
+    operation: create
+    source: specs/tts-readiness/spec.md
+workspace:
+  isolation: current
+  change_branch: master
+  target_branch: master
+  finish: null
+loop:
+  stage: done
+  goal_cycle: 2
+  iteration: 1
+  attempt: 1
+  retry_epoch: 0
+  failed_iteration_count: 0
+  no_progress_count: 0
+  execution_failure_count: 0
+  previous_unresolved_ids: []
+  next_action: null
+acceptance:
+  - id: A1
+    source: brief.md
+    text: "A1: With Zhubo selected and healthy, ordinary synthesis and streaming
+      both return HTTP 200 with non-empty valid audio even when GPT-SoVITS is
+      unavailable."
+    result: passed
+    reason:
+      text: "Zhubo provider returns HTTP 200 with valid audio for both ordinary
+        synthesis and streaming. Implementation: main.py:2288-2295
+        _ensure_tts_ready() checks only adapter.health_check(), not GPT-SoVITS.
+        Evidence: /tmp/zhubo-tts-verified/results.json shows
+        steady/energetic/friendly presets returned 200 with 223-307KB WAV
+        payload for both /synthesize and /stream endpoints. Test:
+        test_tts_readiness.py test_healthy_zhubo_does_not_require_other_engines
+        confirms GPT-SoVITS is not probed when provider=zhubo."
+      truncated: false
+  - id: A2
+    source: brief.md
+    text: "A2: With Zhubo selected but its adapter missing or service unhealthy,
+      readiness returns HTTP 503 naming Zhubo and does not probe GPT-SoVITS."
+    result: passed
+    reason:
+      text: "Unavailable Zhubo returns HTTP 503 with provider-specific message without
+        probing GPT-SoVITS. Implementation: main.py:2290-2295 raises
+        HTTPException(503, 'Zhubo TTS...') when adapter is None or
+        health_check() fails. Test: test_tts_readiness.py
+        test_unavailable_zhubo_has_provider_specific_503 confirms 503 contains
+        'Zhubo TTS' and not 'GPT-SoVITS', and that gpt_sovits_reachable is never
+        called."
+      truncated: false
+  - id: A3
+    source: brief.md
+    text: "A3: Existing IndexTTS2 and GPT-SoVITS readiness behavior remains intact."
+    result: passed
+    reason:
+      text: "IndexTTS2 and GPT-SoVITS readiness branches remain intact.
+        Implementation: main.py:2296-2308 preserves separate provider branches
+        with original reference/configured/reachable checks. Test:
+        test_tts_readiness.py parametrized
+        test_other_provider_readiness_is_preserved validates both idextts2 and
+        gpt-sovits with various reference/configured/reachable states,
+        confirming Zhubo adapter is never called for other providers."
+      truncated: false
+  - id: A4
+    source: brief.md
+    text: "A4: Each selected preset or uploaded clone reaches Zhubo with its own
+      reference audio; unknown or missing voices fail explicitly instead of
+      silently selecting a default."
+    result: passed
+    reason:
+      text: "Each voice reaches Zhubo with its own reference audio; unknown voices
+        fail explicitly. Implementation: main.py:1780-1803 _voice_config()
+        resolves preset or uploaded reference, raises HTTPException(404/422) for
+        missing voices. zhubo_adapter.py:26-29 encodes reference bytes as base64
+        in payload. Test: test_zhubo_voices.py
+        test_selected_voice_is_used_in_both_endpoints verifies
+        steady/energetic/friendly presets and uploaded clone 'voice-test' each
+        use their distinct reference path in both /synthesize and /stream.
+        test_unknown_voice_fails_before_audio_headers confirms 404 for missing
+        voice without calling adapter."
+      truncated: false
+  - id: A5
+    source: brief.md
+    text: "A5: Zhubo clone validation and voice priming use Zhubo; unhealthy service
+      status is reported honestly without GPT-SoVITS dependency."
+    result: passed
+    reason:
+      text: "Clone validation and voice priming use Zhubo without GPT-SoVITS
+        dependency. Implementation: main.py:1434-1454 _warm_single_voice() for
+        zhubo provider calls adapter.synthesize with reference audio, probes
+        result, sets synthesis_status. main.py:3027-3039 prime_voice() for zhubo
+        calls _ensure_tts_ready() and _prime_voice_profile(). Test:
+        test_zhubo_voices.py test_clone_probe_and_prime_use_zhubo confirms
+        pending clone calls adapter.synthesize with correct reference, sets
+        status to ready, and prime_voice returns ready=True. Monkeypatch
+        prevents GPT-SoVITS from being reached."
+      truncated: false
+  - id: A6
+    source: brief.md
+    text: "A6: Zhubo API volume is applied once with clipping, UI volume remains
+      applied once, and fragmented WAV headers allow PCM to stream before the
+      full payload is buffered."
+    result: passed
+    reason:
+      text: "Zhubo API applies volume once with clipping; UI sends unity gain; WAV
+        headers stream incrementally. Implementation: api_server.py:87 clips
+        audio_pcm to [-32768,32767] after volume scaling. main.py:2224-2271
+        _wav_data_offset() and _iter_pcm_wav_payload() parse header without
+        waiting for full payload. Test: test_api_server.py
+        test_http_volume_scales_once_and_clips validates (volume=0.5,
+        expected=(10000,-10000)) and (volume=2, expected=(32767,-32768)).
+        test_zhubo_voices.py test_wav_parser_does_not_wait_for_all_pcm confirms
+        _wav_data_offset(audio[:46])==44 and incremental chunk yield. Builder
+        handoff reports 149 backend+service tests passed including service
+        volume tests."
+      truncated: false
+builder_handoff:
+  candidate_id: 6bff8d7e-c926-4a09-86d5-1b5c97a0896e
+  identity_provider: skill-coordinated
+  builder_execution_ref: skill-coordinated:builder:01af05d8-8592-4fe4-b16e-b668640cf217
+  iteration: 1
+  summary:
+    text: Preserved selected preset/uploaded voice identity by transmitting
+      reference WAV bytes to Zhubo; removed alias fallback, added strict voice
+      resolution, Zhubo clone probing/priming and honest status. Service
+      validates reference WAV, serializes model inference without blocking
+      health, and applies clipped gain once; browser sends unity gain. Fixed
+      incremental WAV header detection and reference normalization that removed
+      valid speech. Updated service is running and actual three-preset/clone
+      requests passed.
+    truncated: false
+  addressed_acceptance_ids:
+    - A1
+    - A2
+    - A3
+    - A4
+    - A5
+    - A6
+  checks:
+    - name:
+        text: backend-and-service-tests
+        truncated: false
+      result: passed
+      note:
+        text: "149 passed, 2 optional GPT-SoVITS runtime skips; command:
+          PYTHONPATH=/home/ln/AI/zhubo .venv/bin/python -m pytest -q tests
+          /home/ln/AI/zhubo/tests/test_api_server.py from backend"
+        truncated: false
+    - name:
+        text: frontend-syntax
+        truncated: false
+      result: passed
+      note:
+        text: node --check frontend/app.js
+        truncated: false
+    - name:
+        text: live-tts-and-clone
+        truncated: false
+      result: passed
+      note:
+        text: Three presets synthesized/streamed/primed; unknown IDs 404; temporary
+          uploaded clone passed real probe, synthesized and streamed, then
+          removed. Outputs /tmp/zhubo-tts-verified/results.json. Real mute
+          output silent; health responsive during synthesis (0.002s).
+        truncated: false
+  checks_truncated: false
+  known_limits:
+    - text: No subjective listening or measured speaker-similarity verdict; reference
+        identity transport is tested.
+      truncated: false
+    - text: Zhubo emits phrase-level audio; no token-level engine streaming was added.
+      truncated: false
+    - text: Service implementation and tests are in /home/ln/AI/zhubo while
+        integration code is in /home/ln/AI/car-live-deployment-v3; verify both
+        paths.
+      truncated: false
+  known_limits_truncated: false
+  review:
+    status: passed
+    summary:
+      text: "Fresh independent read-only Pi review passed including follow-up
+        reference normalization fix. Report:
+        /tmp/zhubo-tts-review-complete.log."
+      truncated: false
+    reviewer_execution_ref: /tmp/zhubo-tts-review-complete-session/2026-09-15T10-34-58-414Z_01a0a4a2-59ee-7031-8b09-6909eaa34a3f.jsonl
+  submitted_at: 2026-09-15T10:40:19.703Z
+blockers: []
+verification:
+  candidate_id: 6bff8d7e-c926-4a09-86d5-1b5c97a0896e
+  identity_provider: skill-coordinated
+  verifier_execution_ref: skill-coordinated:verifier:f42fceef-df1c-4194-9f0b-71204a3807ee
+  iteration: 1
+  attempt: 1
+  assurance: skill-coordinated
+  verdict: pass
+  checks:
+    - id: backend-service-tests
+      name:
+        text: Backend and Zhubo service regression tests
+        truncated: false
+      argv_display:
+        - text: PYTHONPATH=/home/ln/AI/zhubo
+          truncated: false
+        - text: .venv/bin/python
+          truncated: false
+        - text: -m
+          truncated: false
+        - text: pytest
+          truncated: false
+        - text: -q
+          truncated: false
+        - text: tests
+          truncated: false
+        - text: /home/ln/AI/zhubo/tests/test_api_server.py
+          truncated: false
+      argv_truncated: false
+      cwd_ref: backend
+      status: passed
+      exit_code: 0
+      duration_ms: 5126
+    - id: frontend-syntax
+      name:
+        text: Frontend JavaScript syntax
+        truncated: false
+      argv_display:
+        - text: --check
+          truncated: false
+        - text: frontend/app.js
+          truncated: false
+      argv_truncated: false
+      cwd_ref: .
+      status: passed
+      exit_code: 0
+      duration_ms: 21
+    - id: live-tts-clone
+      name:
+        text: Real preset and uploaded clone synthesis
+        truncated: false
+      argv_display:
+        - text: /tmp/verify_zhubo_live.py
+          truncated: false
+      argv_truncated: false
+      cwd_ref: .
+      status: passed
+      exit_code: 0
+      duration_ms: 23440
+  summary:
+    text: "All six acceptance criteria passed. Zhubo synthesis and streaming return
+      HTTP 200 with valid audio independent of GPT-SoVITS (A1). Unavailable
+      Zhubo reports honest 503 without probing other engines (A2). IndexTTS2 and
+      GPT-SoVITS readiness logic unchanged (A3). Preset and uploaded voices use
+      their own reference audio; unknown IDs fail explicitly (A4). Clone
+      validation and priming use Zhubo adapter (A5). Service applies clipped
+      volume once; WAV parser streams headers incrementally (A6). Evidence: 149
+      passed backend/service tests, real synthesis of three presets plus
+      temporary clone, WAV incremental parsing verified, frontend syntax valid."
+    truncated: false
+  risks: []
+  risks_truncated: false
+  completed_at: 2026-09-15T10:51:58.723Z
+history:
+  - goal_cycle: 1
+    iteration: 1
+    attempt: 0
+    outcome: recovery
+    unresolved_ids: []
+    summary:
+      text: Native confirmed acceptance criteria changed
+      truncated: false
+    completed_at: 2026-09-15T10:17:18.105Z
+  - goal_cycle: 2
+    iteration: 1
+    attempt: 1
+    outcome: pass
+    unresolved_ids: []
+    summary:
+      text: "All six acceptance criteria passed. Zhubo synthesis and streaming return
+        HTTP 200 with valid audio independent of GPT-SoVITS (A1). Unavailable
+        Zhubo reports honest 503 without probing other engines (A2). IndexTTS2
+        and GPT-SoVITS readiness logic unchanged (A3). Preset and uploaded
+        voices use their own reference audio; unknown IDs fail explicitly (A4).
+        Clone validation and priming use Zhubo adapter (A5). Service applies
+        clipped volume once; WAV parser streams headers incrementally (A6).
+        Evidence: 149 passed backend/service tests, real synthesis of three
+        presets plus temporary clone, WAV incremental parsing verified, frontend
+        syntax valid."
+      truncated: false
+    completed_at: 2026-09-15T10:51:58.723Z
+history_overflow:
+  dropped_entries: 0
+  first_dropped_at: null
+  last_dropped_at: null
+  outcome_counts:
+    pass: 0
+    fail: 0
+    blocked: 0
+    execution-error: 0
+    recovery: 0
+verification_result: pass
+verification_report: verification.md
+archived: true
+created_at: 2026-09-15T09:59:21.321Z

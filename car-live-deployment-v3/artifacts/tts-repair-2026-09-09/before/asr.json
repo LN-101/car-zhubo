@@ -1,0 +1,90 @@
+[
+  {
+    "voice": "steady",
+    "text": "今天介绍这款车的续航和智能配置。",
+    "first_pcm_ms": 29831.5,
+    "total_ms": 32366.7,
+    "duration": 2.52,
+    "wav_headers": 1,
+    "audio": "C:\\Users\\seele\\Desktop\\test\\artifacts\\tts-repair-2026-09-09\\before\\steady-00.wav",
+    "ok": true,
+    "asr_text": "今天介绍这款车的续航和智能配置"
+  },
+  {
+    "voice": "steady",
+    "text": "从30%充到80%需要0.33小时[2]，纯电续航为580公里。",
+    "first_pcm_ms": 5198.3,
+    "total_ms": 9619.4,
+    "duration": 6.76,
+    "wav_headers": 1,
+    "audio": "C:\\Users\\seele\\Desktop\\test\\artifacts\\tts-repair-2026-09-09\\before\\steady-01.wav",
+    "ok": true,
+    "asr_text": "从百分之三十冲到百分之八十需要零点三三小时纯电续航为五百八十公里"
+  },
+  {
+    "voice": "voice-a58847fe6169",
+    "text": "今天介绍这款车的续航和智能配置。",
+    "first_pcm_ms": 4767.6,
+    "total_ms": 6433.7,
+    "duration": 3.798,
+    "wav_headers": 1,
+    "audio": "C:\\Users\\seele\\Desktop\\test\\artifacts\\tts-repair-2026-09-09\\before\\voice-a58847fe6169-00.wav",
+    "ok": true,
+    "asr_text": "今天介绍这款车的续航和智能配置"
+  },
+  {
+    "voice": "voice-a58847fe6169",
+    "text": "从30%充到80%需要0.33小时[2]，纯电续航为580公里。",
+    "first_pcm_ms": 6741.4,
+    "total_ms": 12969.9,
+    "duration": 9.043,
+    "wav_headers": 1,
+    "audio": "C:\\Users\\seele\\Desktop\\test\\artifacts\\tts-repair-2026-09-09\\before\\voice-a58847fe6169-01.wav",
+    "ok": true,
+    "asr_text": "从百分之三十充到百分之八十需要零点三三小时沉电续航为五百八十公里"
+  },
+  {
+    "voice": "voice-46458822000f",
+    "text": "今天介绍这款车的续航和智能配置。",
+    "first_pcm_ms": 5302.9,
+    "total_ms": 7226.7,
+    "duration": 3.898,
+    "wav_headers": 1,
+    "audio": "C:\\Users\\seele\\Desktop\\test\\artifacts\\tts-repair-2026-09-09\\before\\voice-46458822000f-00.wav",
+    "ok": true,
+    "asr_text": "今天介绍这款车的续航和智能配置"
+  },
+  {
+    "voice": "voice-46458822000f",
+    "text": "从30%充到80%需要0.33小时[2]，纯电续航为580公里。",
+    "first_pcm_ms": 9309.7,
+    "total_ms": 13640.5,
+    "duration": 11.295,
+    "wav_headers": 1,
+    "audio": "C:\\Users\\seele\\Desktop\\test\\artifacts\\tts-repair-2026-09-09\\before\\voice-46458822000f-01.wav",
+    "ok": true,
+    "asr_text": "从百分之三十充到百分之八十需要零点三三小时纯电续航为五百八十公里"
+  },
+  {
+    "voice": "voice-ff9f6ad7787d",
+    "text": "今天介绍这款车的续航和智能配置。",
+    "first_pcm_ms": 4332.9,
+    "total_ms": 6643.8,
+    "duration": 3.458,
+    "wav_headers": 1,
+    "audio": "C:\\Users\\seele\\Desktop\\test\\artifacts\\tts-repair-2026-09-09\\before\\voice-ff9f6ad7787d-00.wav",
+    "ok": true,
+    "asr_text": "今天介绍这款车的续航和智能配置"
+  },
+  {
+    "voice": "voice-ff9f6ad7787d",
+    "text": "从30%充到80%需要0.33小时[2]，纯电续航为580公里。",
+    "first_pcm_ms": 8600.6,
+    "total_ms": 12156.9,
+    "duration": 11.22,
+    "wav_headers": 1,
+    "audio": "C:\\Users\\seele\\Desktop\\test\\artifacts\\tts-repair-2026-09-09\\before\\voice-ff9f6ad7787d-01.wav",
+    "ok": true,
+    "asr_text": "从百分之三十充到百分之八十需要零点三三小时沉电续航为五百八十公里"
+  }
+]

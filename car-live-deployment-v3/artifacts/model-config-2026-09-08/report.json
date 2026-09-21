@@ -1,0 +1,16 @@
+{
+  "errors": [],
+  "checks": [
+    "current configuration loads, existing key is not returned or populated",
+    "UI save applies immediately and preserves existing key",
+    "page reload retains saved fields",
+    "failed save keeps current configuration and enables retry",
+    "save-and-test succeeds against configured model, original timeout restored"
+  ],
+  "query": {
+    "provider": "llm-grounded-rag",
+    "latency_ms": 1189
+  },
+  "passed": true,
+  "restored": true
+}

@@ -1,0 +1,15 @@
+{
+  "errors": [],
+  "checks": [
+    "microphone requested only on Record; denied permission shows retry/upload options",
+    "switching mode during permission request closes delayed streams and preserves upload text",
+    "too-short recording is rejected without a clone upload",
+    "recording converts to WAV, includes exact read-along transcript, supports playback and releases microphone",
+    "recorded WAV and automatic transcript create a real clone, complete warmup/calibration and select it",
+    "microphone-created clone generates usable preview audio through the existing GPT-SoVITS path",
+    "leaving the studio stops the microphone"
+  ],
+  "sampleQuality": "ready",
+  "passed": true,
+  "temporaryCloneRemoved": true
+}

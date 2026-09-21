@@ -1,0 +1,9 @@
+{
+  "source_voice": "voice-a58847fe6169",
+  "upload_ms": 117.9,
+  "ready_ms": 2971.2,
+  "calibration_pending": false,
+  "calibrating": false,
+  "stream_bytes": 230898,
+  "ok": true
+}

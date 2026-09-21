@@ -1,0 +1,56 @@
+{
+  "environment": {
+    "gpu": "NVIDIA GeForce RTX 5070 Ti Laptop GPU",
+    "torch": "2.8.0+cu128",
+    "python": "3.11.13",
+    "repo": "/home/ln/AI/index-tts",
+    "voice": "/home/ln/AI/index-tts/examples/voice_01.wav",
+    "sample_rate": 22050,
+    "bf16": true,
+    "num_beams": 1,
+    "threads": 4,
+    "compile": false,
+    "device": "default"
+  },
+  "initialization_s": 11.670922866999717,
+  "warmup_s": 1.7728541220003535,
+  "measurement": "Warm request; first output uses PortAudio DAC timestamps, not acoustic capture.",
+  "script": "这款车采用前置单电机。我们继续看看空间表现。",
+  "segments": [
+    "这款车采用前置单电机。",
+    "我们继续看看空间表现。"
+  ],
+  "runs": [
+    {
+      "first_pcm_s": 1.045193898999969,
+      "first_device_output_s": 1.129528646705694,
+      "first_output_within_3s": true,
+      "synthesis_wall_s": 2.1295120400000087,
+      "audio_s": 5.421859410430839,
+      "rtf": 0.39121550531525295,
+      "playback_s": 5.421675088174197,
+      "streamed_before_synthesis_done": true,
+      "underrun_events": 0,
+      "underrun_s": 0.0,
+      "device_underflows": 0,
+      "played_ids": [
+        0,
+        1
+      ],
+      "segments": [
+        {
+          "id": 0,
+          "text": "这款车采用前置单电机。",
+          "inference_s": 1.0370726330011166,
+          "queue_wait_s": 1.3064999620837625e-05
+        },
+        {
+          "id": 1,
+          "text": "我们继续看看空间表现。",
+          "inference_s": 1.0840428359988437,
+          "queue_wait_s": 3.557600030035246e-05
+        }
+      ]
+    }
+  ]
+}

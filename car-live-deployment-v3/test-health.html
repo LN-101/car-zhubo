@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>健康检查测试</title>
+  <style>
+    body { font-family: monospace; padding: 20px; background: #1a1a1a; color: #fff; }
+    #log { background: #2a2a2a; padding: 15px; border-radius: 4px; }
+    .ok { color: #4ade80; }
+    .error { color: #f87171; }
+    button { margin: 10px 5px; padding: 10px 20px; font-size: 14px; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <h1>🔍 健康检查测试</h1>
+  <button onclick="testHealth()">运行健康检查</button>
+  <button onclick="clearLog()">清空日志</button>
+  <div id="log"></div>
+
+  <script>
+    const API = 'http://127.0.0.1:8000/api';
+    const log = document.getElementById('log');
+
+    function addLog(message, isError = false) {
+      const time = new Date().toLocaleTimeString('zh-CN', { hour12: false, fractionalSecondDigits: 3 });
+      const line = document.createElement('div');
+      line.className = isError ? 'error' : 'ok';
+      line.textContent = `[${time}] ${message}`;
+      log.appendChild(line);
+      log.scrollTop = log.scrollHeight;
+      console.log(message);
+    }
+
+    function clearLog() {
+      log.innerHTML = '';
+    }
+
+    async function testHealth() {
+      addLog('开始健康检查...');
+
+      const controller = new AbortController();
+      const timeout = setTimeout(() => {
+        controller.abort();
+        addLog('⏱️ 请求超时（1200ms）', true);
+      }, 1200);
+
+      try {
+        addLog(`📡 发送请求到: ${API}/health`);
+        const startTime = performance.now();
+
+        const response = await fetch(API + '/health', { signal: controller.signal });
+
+        const elapsed = Math.round(performance.now() - startTime);
+        addLog(`⏰ 响应时间: ${elapsed}ms`);
+
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status} ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        addLog(`✅ 健康检查成功: ${JSON.stringify(data)}`);
+        addLog(`📊 服务状态: ${data.status}`);
+        addLog(`📦 服务名称: ${data.service}`);
+
+        clearTimeout(timeout);
+
+      } catch (error) {
+        clearTimeout(timeout);
+        addLog(`❌ 健康检查失败: ${error.name} - ${error.message}`, true);
+
+        if (error.name === 'AbortError') {
+          addLog('💡 建议: 超时时间太短，尝试增加到3000ms', true);
+        } else if (error.message.includes('Failed to fetch')) {
+          addLog('💡 建议: 后端服务未启动或端口不对', true);
+        } else if (error.message.includes('CORS')) {
+          addLog('💡 建议: CORS跨域配置问题', true);
+        }
+      }
+    }
+
+    // 页面加载时自动运行一次
+    window.addEventListener('DOMContentLoaded', () => {
+      addLog('页面已加载，准备就绪');
+      setTimeout(testHealth, 500);
+    });
+  </script>
+</body>
+</html>

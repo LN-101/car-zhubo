@@ -1,0 +1,86 @@
+# Deployment Package Exclusions
+# Files and directories to exclude when creating deployment package
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+
+# Environment and secrets
+backend/.env
+.env
+.env.local
+
+# Runtime data
+data/car_live.db
+data/*.rag-index/
+data/uploads/voices/*.wav
+data/uploads/voices/*.ogg
+data/uploads/voices/*.mp3
+data/uploads/documents/
+
+# Models (download on target machine)
+models/rag/
+
+# Git
+.git/
+.gitignore
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log
+
+# Node modules (install on target)
+node_modules/
+frontend/node_modules/
+
+# Build outputs
+frontend/dist/
+backend/dist/
+
+# Test artifacts and old reports
+artifacts/acceptance-*/
+artifacts/implementation-*/
+artifacts/rag-upgrade-*/
+ACCEPTANCE_CHECKLIST.md
+CONNECTION_FIX.md
+DIALOG_STYLE_FIX.md
+FINAL_*.md
+OPTIMIZATION_*.md
+PERFORMANCE_*.md
+QUICK_FIX_GUIDE.md
+ROOT_CAUSE_FOUND.md
+SCRIPT_INPUT_OPTIMIZATION.md
+SERVICE_OFFLINE_FIX.md
+SUMMARY.md
+SWITCH_VERIFICATION.md
+TTS_*.md
+INDEXTTS_*.md
+
+# Large binary files
+*.bin
+*.TAG
+
+# Competition submission materials (optional, keep if needed)
+# submission/
+
+# Documentation (optional, keep essential ones)
+# Keep: README.md, DEPLOYMENT.md, docs/

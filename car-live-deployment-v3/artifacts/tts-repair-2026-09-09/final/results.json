@@ -1,0 +1,262 @@
+[
+  {
+    "voice": "steady",
+    "text": "今天介绍这款车的续航和智能配置。",
+    "selection_prime_ms": 547.4,
+    "first_pcm_ms": 3331.5,
+    "total_ms": 6336.4,
+    "duration": 2.554,
+    "wav_headers": 1,
+    "audio": "C:\\Users\\seele\\Desktop\\test\\artifacts\\tts-repair-2026-09-09\\final\\steady-00.wav",
+    "ok": true
+  },
+  {
+    "voice": "steady",
+    "text": "从30%充到80%需要0.33小时[2]，纯电续航为580公里。",
+    "selection_prime_ms": 547.4,
+    "first_pcm_ms": 2694.2,
+    "total_ms": 9266.0,
+    "duration": 6.539,
+    "wav_headers": 1,
+    "audio": "C:\\Users\\seele\\Desktop\\test\\artifacts\\tts-repair-2026-09-09\\final\\steady-01.wav",
+    "ok": true
+  },
+  {
+    "voice": "steady",
+    "text": "激光雷达可以辅助感知周围环境，驾驶员仍需时刻关注路况。",
+    "selection_prime_ms": 547.4,
+    "first_pcm_ms": 1714.1,
+    "total_ms": 6224.8,
+    "duration": 4.356,
+    "wav_headers": 1,
+    "audio": "C:\\Users\\seele\\Desktop\\test\\artifacts\\tts-repair-2026-09-09\\final\\steady-02.wav",
+    "ok": true
+  },
+  {
+    "voice": "steady",
+    "text": "你平时主要在市区通勤，还是经常跑高速？",
+    "selection_prime_ms": 547.4,
+    "first_pcm_ms": 2239.8,
+    "total_ms": 6390.6,
+    "duration": 3.437,
+    "wav_headers": 1,
+    "audio": "C:\\Users\\seele\\Desktop\\test\\artifacts\\tts-repair-2026-09-09\\final\\steady-03.wav",
+    "ok": true
+  },
+  {
+    "voice": "steady",
+    "text": "接下来看看车内空间，轴距为2720毫米。",
+    "selection_prime_ms": 547.4,
+    "first_pcm_ms": 2068.8,
+    "total_ms": 6861.8,
+    "duration": 4.664,
+    "wav_headers": 1,
+    "audio": "C:\\Users\\seele\\Desktop\\test\\artifacts\\tts-repair-2026-09-09\\final\\steady-04.wav",
+    "ok": true
+  },
+  {
+    "voice": "steady",
+    "text": "最大功率150千瓦，具体优惠以门店最新报价为准。",
+    "selection_prime_ms": 547.4,
+    "first_pcm_ms": 2237.6,
+    "total_ms": 7892.9,
+    "duration": 4.824,
+    "wav_headers": 1,
+    "audio": "C:\\Users\\seele\\Desktop\\test\\artifacts\\tts-repair-2026-09-09\\final\\steady-05.wav",
+    "ok": true
+  },
+  {
+    "voice": "voice-a58847fe6169",
+    "text": "今天介绍这款车的续航和智能配置。",
+    "selection_prime_ms": 983.6,
+    "first_pcm_ms": 3089.7,
+    "total_ms": 6210.0,
+    "duration": 3.68,
+    "wav_headers": 1,
+    "audio": "C:\\Users\\seele\\Desktop\\test\\artifacts\\tts-repair-2026-09-09\\final\\voice-a58847fe6169-00.wav",
+    "ok": true
+  },
+  {
+    "voice": "voice-a58847fe6169",
+    "text": "从30%充到80%需要0.33小时[2]，纯电续航为580公里。",
+    "selection_prime_ms": 983.6,
+    "first_pcm_ms": 2444.3,
+    "total_ms": 12954.4,
+    "duration": 9.37,
+    "wav_headers": 1,
+    "audio": "C:\\Users\\seele\\Desktop\\test\\artifacts\\tts-repair-2026-09-09\\final\\voice-a58847fe6169-01.wav",
+    "ok": true
+  },
+  {
+    "voice": "voice-a58847fe6169",
+    "text": "激光雷达可以辅助感知周围环境，驾驶员仍需时刻关注路况。",
+    "selection_prime_ms": 983.6,
+    "first_pcm_ms": 2350.0,
+    "total_ms": 9382.6,
+    "duration": 6.091,
+    "wav_headers": 1,
+    "audio": "C:\\Users\\seele\\Desktop\\test\\artifacts\\tts-repair-2026-09-09\\final\\voice-a58847fe6169-02.wav",
+    "ok": true
+  },
+  {
+    "voice": "voice-a58847fe6169",
+    "text": "你平时主要在市区通勤，还是经常跑高速？",
+    "selection_prime_ms": 983.6,
+    "first_pcm_ms": 2694.3,
+    "total_ms": 6202.9,
+    "duration": 3.899,
+    "wav_headers": 1,
+    "audio": "C:\\Users\\seele\\Desktop\\test\\artifacts\\tts-repair-2026-09-09\\final\\voice-a58847fe6169-03.wav",
+    "ok": true
+  },
+  {
+    "voice": "voice-a58847fe6169",
+    "text": "接下来看看车内空间，轴距为2720毫米。",
+    "selection_prime_ms": 983.6,
+    "first_pcm_ms": 2290.2,
+    "total_ms": 6416.5,
+    "duration": 5.498,
+    "wav_headers": 1,
+    "audio": "C:\\Users\\seele\\Desktop\\test\\artifacts\\tts-repair-2026-09-09\\final\\voice-a58847fe6169-04.wav",
+    "ok": true
+  },
+  {
+    "voice": "voice-a58847fe6169",
+    "text": "最大功率150千瓦，具体优惠以门店最新报价为准。",
+    "selection_prime_ms": 983.6,
+    "first_pcm_ms": 1122.7,
+    "total_ms": 3181.2,
+    "duration": 5.577,
+    "wav_headers": 1,
+    "audio": "C:\\Users\\seele\\Desktop\\test\\artifacts\\tts-repair-2026-09-09\\final\\voice-a58847fe6169-05.wav",
+    "ok": true
+  },
+  {
+    "voice": "voice-46458822000f",
+    "text": "今天介绍这款车的续航和智能配置。",
+    "selection_prime_ms": 405.7,
+    "first_pcm_ms": 2457.7,
+    "total_ms": 3639.3,
+    "duration": 4.029,
+    "wav_headers": 1,
+    "audio": "C:\\Users\\seele\\Desktop\\test\\artifacts\\tts-repair-2026-09-09\\final\\voice-46458822000f-00.wav",
+    "ok": true
+  },
+  {
+    "voice": "voice-46458822000f",
+    "text": "从30%充到80%需要0.33小时[2]，纯电续航为580公里。",
+    "selection_prime_ms": 405.7,
+    "ok": false,
+    "error": "peer closed connection without sending complete message body (incomplete chunked read)"
+  },
+  {
+    "voice": "voice-46458822000f",
+    "text": "激光雷达可以辅助感知周围环境，驾驶员仍需时刻关注路况。",
+    "selection_prime_ms": 405.7,
+    "first_pcm_ms": 3303.0,
+    "total_ms": 8203.4,
+    "duration": 6.845,
+    "wav_headers": 1,
+    "audio": "C:\\Users\\seele\\Desktop\\test\\artifacts\\tts-repair-2026-09-09\\final\\voice-46458822000f-02.wav",
+    "ok": true
+  },
+  {
+    "voice": "voice-46458822000f",
+    "text": "你平时主要在市区通勤，还是经常跑高速？",
+    "selection_prime_ms": 405.7,
+    "first_pcm_ms": 894.8,
+    "total_ms": 2831.7,
+    "duration": 5.532,
+    "wav_headers": 1,
+    "audio": "C:\\Users\\seele\\Desktop\\test\\artifacts\\tts-repair-2026-09-09\\final\\voice-46458822000f-03.wav",
+    "ok": true
+  },
+  {
+    "voice": "voice-46458822000f",
+    "text": "接下来看看车内空间，轴距为2720毫米。",
+    "selection_prime_ms": 405.7,
+    "first_pcm_ms": 559.3,
+    "total_ms": 2404.6,
+    "duration": 4.667,
+    "wav_headers": 1,
+    "audio": "C:\\Users\\seele\\Desktop\\test\\artifacts\\tts-repair-2026-09-09\\final\\voice-46458822000f-04.wav",
+    "ok": true
+  },
+  {
+    "voice": "voice-46458822000f",
+    "text": "最大功率150千瓦，具体优惠以门店最新报价为准。",
+    "selection_prime_ms": 405.7,
+    "first_pcm_ms": 600.6,
+    "total_ms": 2448.3,
+    "duration": 6.705,
+    "wav_headers": 1,
+    "audio": "C:\\Users\\seele\\Desktop\\test\\artifacts\\tts-repair-2026-09-09\\final\\voice-46458822000f-05.wav",
+    "ok": true
+  },
+  {
+    "voice": "voice-ff9f6ad7787d",
+    "text": "今天介绍这款车的续航和智能配置。",
+    "selection_prime_ms": 253.3,
+    "first_pcm_ms": 766.3,
+    "total_ms": 1521.1,
+    "duration": 3.365,
+    "wav_headers": 1,
+    "audio": "C:\\Users\\seele\\Desktop\\test\\artifacts\\tts-repair-2026-09-09\\final\\voice-ff9f6ad7787d-00.wav",
+    "ok": true
+  },
+  {
+    "voice": "voice-ff9f6ad7787d",
+    "text": "从30%充到80%需要0.33小时[2]，纯电续航为580公里。",
+    "selection_prime_ms": 253.3,
+    "first_pcm_ms": 633.8,
+    "total_ms": 3518.2,
+    "duration": 10.153,
+    "wav_headers": 1,
+    "audio": "C:\\Users\\seele\\Desktop\\test\\artifacts\\tts-repair-2026-09-09\\final\\voice-ff9f6ad7787d-01.wav",
+    "ok": true
+  },
+  {
+    "voice": "voice-ff9f6ad7787d",
+    "text": "激光雷达可以辅助感知周围环境，驾驶员仍需时刻关注路况。",
+    "selection_prime_ms": 253.3,
+    "first_pcm_ms": 589.3,
+    "total_ms": 2724.5,
+    "duration": 7.263,
+    "wav_headers": 1,
+    "audio": "C:\\Users\\seele\\Desktop\\test\\artifacts\\tts-repair-2026-09-09\\final\\voice-ff9f6ad7787d-02.wav",
+    "ok": true
+  },
+  {
+    "voice": "voice-ff9f6ad7787d",
+    "text": "你平时主要在市区通勤，还是经常跑高速？",
+    "selection_prime_ms": 253.3,
+    "first_pcm_ms": 520.1,
+    "total_ms": 2162.8,
+    "duration": 4.475,
+    "wav_headers": 1,
+    "audio": "C:\\Users\\seele\\Desktop\\test\\artifacts\\tts-repair-2026-09-09\\final\\voice-ff9f6ad7787d-03.wav",
+    "ok": true
+  },
+  {
+    "voice": "voice-ff9f6ad7787d",
+    "text": "接下来看看车内空间，轴距为2720毫米。",
+    "selection_prime_ms": 253.3,
+    "first_pcm_ms": 996.0,
+    "total_ms": 3495.8,
+    "duration": 5.062,
+    "wav_headers": 1,
+    "audio": "C:\\Users\\seele\\Desktop\\test\\artifacts\\tts-repair-2026-09-09\\final\\voice-ff9f6ad7787d-04.wav",
+    "ok": true
+  },
+  {
+    "voice": "voice-ff9f6ad7787d",
+    "text": "最大功率150千瓦，具体优惠以门店最新报价为准。",
+    "selection_prime_ms": 253.3,
+    "first_pcm_ms": 1078.0,
+    "total_ms": 4822.5,
+    "duration": 7.207,
+    "wav_headers": 1,
+    "audio": "C:\\Users\\seele\\Desktop\\test\\artifacts\\tts-repair-2026-09-09\\final\\voice-ff9f6ad7787d-05.wav",
+    "ok": true
+  }
+]

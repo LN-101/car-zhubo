@@ -1,0 +1,230 @@
+schema: comet.native.v4
+name: streaming-tts-broadcast
+language: en
+phase: archive
+status: done
+state_version: 8
+brief: brief.md
+shape_confirmation_hash: fa974f19667615b7f4c5c0e19028a589336596f8ef4ac38928456b57464fc19d
+spec_changes:
+  - capability: streaming-playback
+    operation: create
+    source: specs/streaming-playback/spec.md
+  - capability: tts-requirements
+    operation: create
+    source: specs/tts-requirements/spec.md
+workspace:
+  isolation: current
+  change_branch: null
+  target_branch: null
+  finish: null
+loop:
+  stage: done
+  goal_cycle: 1
+  iteration: 1
+  attempt: 1
+  retry_epoch: 0
+  failed_iteration_count: 0
+  no_progress_count: 0
+  execution_failure_count: 0
+  previous_unresolved_ids: []
+  next_action: null
+acceptance:
+  - id: A1
+    source: brief.md
+    text: "A1: The extraction preserves all direct mandatory TTS requirements and
+      the live demonstration obligation, including the exact latency threshold
+      of <= 3 seconds."
+    result: passed
+    reason:
+      text: Compared all 52 DOCX paragraphs; all mandatory TTS and live demonstration
+        requirements preserved.
+      truncated: false
+  - id: A2
+    source: brief.md
+    text: "A2: Voice cloning, presets, question-answer speech and optional
+      segmentation/script/statistics requirements are distinguished from direct
+      TTS requirements."
+    result: passed
+    reason:
+      text: Related voice cloning/presets, QA speech and optional features are
+        distinguished from implemented scope.
+      truncated: false
+  - id: A3
+    source: brief.md
+    text: "A3: TTS delivery documents and tests are included; user constraints and
+      unspecified implementation details are clearly identified."
+    result: passed
+    reason:
+      text: Delivery and test requirements, user constraints and unspecified details
+        are included.
+      truncated: false
+  - id: A4
+    source: brief.md
+    text: "A4: Real IndexTTS 2.5 weights produce nonempty audible PCM from a Chinese
+      automotive script, with both CLI text and UTF-8 file input supported."
+    result: passed
+    reason:
+      text: Real IndexTTS 2.5 integration and both CLI paths verified; three nonzero
+        22050 Hz mono PCM16 WAVs match reports.
+      truncated: false
+  - id: A5
+    source: brief.md
+    text: "A5: A multi-segment script starts playback before synthesis completes,
+      plays segments in order while synthesis continues, and records actual
+      underruns without hiding them. Segment identifiers and cancellation
+      prevent future queued audio from playing after cancellation."
+    result: passed
+    reason:
+      text: Bounded queue and callback preserve order; long runs begin near one second
+        before synthesis completes near 27 seconds, IDs 0-8 ordered, zero
+        underruns. Six Runtime tests cover playback, numeric boundaries and
+        cancellation.
+      truncated: false
+  - id: A6
+    source: brief.md
+    text: "A6: A reproducible report records environment, initialization and warmup
+      conditions, first PCM latency, audio-device playback timing, synthesis
+      real-time factor and underrun data, explicitly evaluating the <=3 second
+      target."
+    result: passed
+    reason:
+      text: Reports match original JSON; warm first DAC output 0.923/1.000 seconds for
+        file input and 1.130 seconds for direct text, with initialization, RTF
+        and underrun metrics.
+      truncated: false
+builder_handoff:
+  candidate_id: 993f6905-33f3-4802-b398-59fa46478cfc
+  identity_provider: skill-coordinated
+  builder_execution_ref: skill-coordinated:builder:ef8cd838-a86f-4cfc-9857-ad156be3bfd3
+  iteration: 1
+  summary:
+    text: Implemented CLI IndexTTS 2.5 streaming synthesis and concurrent PCM
+      playback, numeric-safe segmentation, cancellation foundations and real
+      benchmark reports. Fixed independent review's decimal-boundary finding.
+    truncated: false
+  addressed_acceptance_ids:
+    - A1
+    - A2
+    - A3
+    - A4
+    - A5
+    - A6
+  checks:
+    - name:
+        text: streaming unit tests
+        truncated: false
+      result: passed
+      note:
+        text: 6 tests passed
+        truncated: false
+    - name:
+        text: GPU file input and playback
+        truncated: false
+      result: passed
+      note:
+        text: Two 41-43 second runs, first output 0.923/1.000 seconds, zero underruns
+        truncated: false
+    - name:
+        text: GPU direct text input
+        truncated: false
+      result: passed
+      note:
+        text: New two-sentence text, first output 1.130 seconds, zero underruns
+        truncated: false
+  checks_truncated: false
+  known_limits:
+    - text: Warm measurements exclude model initialization; DAC timestamps are not
+        acoustic capture
+      truncated: false
+    - text: CLI milestone only; dynamic editing and frontend deferred
+      truncated: false
+    - text: WAV capture retains generated audio in memory
+      truncated: false
+  known_limits_truncated: false
+  review:
+    status: passed
+    summary:
+      text: Independent review passed after numeric-boundary repair; six tests and
+        real evidence inspected.
+      truncated: false
+    reviewer_execution_ref: /root/review
+  submitted_at: 2026-09-10T06:38:58.617Z
+blockers: []
+verification:
+  candidate_id: 993f6905-33f3-4802-b398-59fa46478cfc
+  identity_provider: skill-coordinated
+  verifier_execution_ref: skill-coordinated:verifier:e856b105-0ddf-41c4-b42b-038cb1e839e2
+  iteration: 1
+  attempt: 1
+  assurance: skill-coordinated
+  verdict: pass
+  checks:
+    - id: streaming-tests
+      name:
+        text: streaming-tests
+        truncated: false
+      argv_display:
+        - text: LD_LIBRARY_PATH=/home/ln/AI/zhubo/.local/usr/lib/x86_64-linux-gnu
+          truncated: false
+        - text: /home/ln/AI/index-tts/.venv/bin/python
+          truncated: false
+        - text: -m
+          truncated: false
+        - text: unittest
+          truncated: false
+        - text: discover
+          truncated: false
+        - text: -s
+          truncated: false
+        - text: tests
+          truncated: false
+        - text: -v
+          truncated: false
+      argv_truncated: false
+      cwd_ref: .
+      status: passed
+      exit_code: 0
+      duration_ms: 280
+  summary:
+    text: Fresh read-only verifier /root/verify passes all six acceptance items for
+      the first CLI streaming playback milestone.
+    truncated: false
+  risks:
+    - text: Warm sample measurements do not establish arbitrary-script or cold-start
+        latency
+      truncated: false
+    - text: Physical acoustic output and subjective speech quality not independently
+        measured
+      truncated: false
+    - text: WAV capture memory grows with script length
+      truncated: false
+    - text: Dynamic editing, frontend and speech controls are future milestones
+      truncated: false
+  risks_truncated: false
+  completed_at: 2026-09-10T06:45:49.027Z
+history:
+  - goal_cycle: 1
+    iteration: 1
+    attempt: 1
+    outcome: pass
+    unresolved_ids: []
+    summary:
+      text: Fresh read-only verifier /root/verify passes all six acceptance items for
+        the first CLI streaming playback milestone.
+      truncated: false
+    completed_at: 2026-09-10T06:45:49.027Z
+history_overflow:
+  dropped_entries: 0
+  first_dropped_at: null
+  last_dropped_at: null
+  outcome_counts:
+    pass: 0
+    fail: 0
+    blocked: 0
+    execution-error: 0
+    recovery: 0
+verification_result: pass
+verification_report: verification.md
+archived: true
+created_at: 2026-09-09T07:21:18.951Z

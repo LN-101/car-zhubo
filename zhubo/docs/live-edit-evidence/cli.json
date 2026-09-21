@@ -1,0 +1,102 @@
+{
+  "environment": {
+    "gpu": "NVIDIA GeForce RTX 5070 Ti Laptop GPU",
+    "torch": "2.8.0+cu128",
+    "python": "3.11.13",
+    "repo": "/home/ln/AI/index-tts",
+    "voice": "/home/ln/AI/index-tts/examples/voice_01.wav",
+    "sample_rate": 22050,
+    "bf16": true,
+    "num_beams": 1,
+    "threads": 4,
+    "compile": false,
+    "device": "default"
+  },
+  "initialization_s": 11.559383628999058,
+  "warmup_s": 1.7621778610009642,
+  "measurement": "Warm request; first output uses PortAudio DAC timestamps, not acoustic capture.",
+  "script": "欢迎来到直播间。今天我们介绍欧拉五纯电版。这款车型适合城市通勤。接下来看看车辆空间。",
+  "segments": [
+    "欢迎来到直播间。",
+    "今天我们介绍欧拉五纯电版。",
+    "这款车型适合城市通勤。接下来看看车辆空间。"
+  ],
+  "runs": [
+    {
+      "first_pcm_s": 0.7328944290002255,
+      "first_device_output_s": 0.9563954488512536,
+      "first_output_within_3s": true,
+      "synthesis_wall_s": 3.510321482001018,
+      "audio_s": 9.729160997732427,
+      "rtf": 0.35910727295133194,
+      "playback_s": 9.729208035116244,
+      "streamed_before_synthesis_done": true,
+      "underrun_events": 0,
+      "underrun_s": 0.0,
+      "device_underflows": 0,
+      "played_ids": [
+        0,
+        1,
+        2
+      ],
+      "segments": [
+        {
+          "id": 0,
+          "text": "欢迎来到直播间。",
+          "inference_s": 0.7168556380001974,
+          "queue_wait_s": 2.1809999452671036e-05
+        },
+        {
+          "id": 1,
+          "text": "今天我们介绍欧拉五纯电版。",
+          "inference_s": 1.152473739000925,
+          "queue_wait_s": 2.5082999854930677e-05
+        },
+        {
+          "id": 2,
+          "text": "这款车型适合城市通勤。接下来看看车辆空间。",
+          "inference_s": 1.624483096999029,
+          "queue_wait_s": 2.3290000171982683e-05
+        }
+      ]
+    },
+    {
+      "first_pcm_s": 0.8145856339997408,
+      "first_device_output_s": 1.0348039248729037,
+      "first_output_within_3s": true,
+      "synthesis_wall_s": 3.206454916000439,
+      "audio_s": 9.798820861678005,
+      "rtf": 0.32622297540973694,
+      "playback_s": 9.798825059937371,
+      "streamed_before_synthesis_done": true,
+      "underrun_events": 0,
+      "underrun_s": 0.0,
+      "device_underflows": 0,
+      "played_ids": [
+        0,
+        1,
+        2
+      ],
+      "segments": [
+        {
+          "id": 0,
+          "text": "欢迎来到直播间。",
+          "inference_s": 0.8049878920010087,
+          "queue_wait_s": 1.192499985336326e-05
+        },
+        {
+          "id": 1,
+          "text": "今天我们介绍欧拉五纯电版。",
+          "inference_s": 1.0305791300015699,
+          "queue_wait_s": 1.6053998479037546e-05
+        },
+        {
+          "id": 2,
+          "text": "这款车型适合城市通勤。接下来看看车辆空间。",
+          "inference_s": 1.3610334750010225,
+          "queue_wait_s": 1.840599907154683e-05
+        }
+      ]
+    }
+  ]
+}

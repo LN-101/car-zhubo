@@ -1,0 +1,22 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node",
+            "args": [
+              "/home/ln/AI/zhubo/.claude/skills/comet/scripts/comet-hook-router.mjs",
+              "--platform",
+              "claude",
+              "--project-root",
+              "/home/ln/AI/zhubo"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

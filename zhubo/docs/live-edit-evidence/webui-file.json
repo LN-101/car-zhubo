@@ -1,0 +1,134 @@
+{
+  "state": "stopped",
+  "error": null,
+  "now_playing": null,
+  "items": [
+    {
+      "id": 1,
+      "text": "欢迎来到直播间。",
+      "revision": 0,
+      "status": "待播放"
+    },
+    {
+      "id": 2,
+      "text": "今天我们介绍欧拉五纯电版。",
+      "revision": 0,
+      "status": "待播放"
+    },
+    {
+      "id": 3,
+      "text": "这款车型适合城市通勤。接下来看看车辆空间。座舱设计方便日常使用。",
+      "revision": 0,
+      "status": "待播放"
+    },
+    {
+      "id": 4,
+      "text": "周末出行也能轻松安排。现在介绍车辆的续航表现。",
+      "revision": 0,
+      "status": "待播放"
+    },
+    {
+      "id": 5,
+      "text": "实际续航与路况有关。接着看看辅助驾驶配置。驾驶时请保持注意力。",
+      "revision": 0,
+      "status": "待播放"
+    },
+    {
+      "id": 6,
+      "text": "欢迎继续了解更多细节。下面看看车内储物空间。",
+      "revision": 0,
+      "status": "待播放"
+    },
+    {
+      "id": 7,
+      "text": "日常物品可以方便收纳。接下来介绍后排乘坐体验。",
+      "revision": 0,
+      "status": "待播放"
+    },
+    {
+      "id": 8,
+      "text": "具体配置请以实际车辆为准。欢迎在直播间交流用车需求。",
+      "revision": 0,
+      "status": "待播放"
+    },
+    {
+      "id": 9,
+      "text": "感谢大家持续关注。",
+      "revision": 0,
+      "status": "待播放"
+    }
+  ],
+  "parameters": {
+    "speed": 1,
+    "volume": 100,
+    "tone": "neutral",
+    "intensity": 0,
+    "duration_factor": 1.0,
+    "emo_vector": null
+  },
+  "parameter_events": [
+    {
+      "at_s": 0.0,
+      "speed": 1,
+      "volume": 100,
+      "tone": "neutral",
+      "intensity": 0,
+      "duration_factor": 1.0,
+      "emo_vector": null
+    }
+  ],
+  "voice": "/home/ln/AI/index-tts/examples/voice_01.wav",
+  "environment": {
+    "initialization_s": 8.999255828999594,
+    "repo": "/home/ln/AI/index-tts",
+    "gpu": "NVIDIA GeForce RTX 5070 Ti Laptop GPU",
+    "torch": "2.8.0+cu128",
+    "sample_rate": 22050,
+    "bf16": true,
+    "num_beams": 1,
+    "threads": 4,
+    "warmup_s": 1.5530475029991067
+  },
+  "measurement": "PortAudio DAC timestamps; not acoustic capture. WAV includes callback gaps and applied volume.",
+  "first_pcm_s": 0.898859431999881,
+  "first_device_output_s": 1.1055687711123028,
+  "first_output_within_3s": true,
+  "synthesis_wall_s": null,
+  "streamed_before_synthesis_done": null,
+  "audio_s": 2.1942857142857144,
+  "rtf": 0.4049499735672886,
+  "playback_s": 0.11566068737237023,
+  "underrun_events": 0,
+  "underrun_s": 0.0,
+  "device_underflows": 0,
+  "edits": [],
+  "generations": [
+    {
+      "id": 0,
+      "item_id": 1,
+      "revision": 0,
+      "phrase": "欢迎来到直播间。",
+      "at_s": 0.8988315530004911,
+      "inference_s": 0.8885759419990791,
+      "audio_s": 2.1942857142857144,
+      "parameters": {
+        "speed": 1,
+        "volume": 100,
+        "tone": "neutral",
+        "intensity": 0,
+        "duration_factor": 1.0,
+        "emo_vector": null
+      },
+      "discarded": false
+    }
+  ],
+  "playback": [
+    {
+      "item_id": 1,
+      "segment_id": 0,
+      "frame": 0,
+      "at_s": 1.1055687711123028
+    }
+  ],
+  "output": "/home/ln/AI/zhubo/outputs/live-edit-validation/broadcasts/20260911-191917-660131"
+}

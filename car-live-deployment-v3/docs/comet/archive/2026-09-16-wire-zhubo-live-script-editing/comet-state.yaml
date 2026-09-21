@@ -1,0 +1,432 @@
+schema: comet.native.v4
+name: wire-zhubo-live-script-editing
+language: en
+phase: archive
+status: done
+state_version: 25
+brief: brief.md
+shape_confirmation_hash: d5cb68d3652b05c5cda2ae1123e7816b41ae72f4c3db33131587b5ddf3bca841
+spec_changes:
+  - capability: live-script-editing
+    operation: create
+    source: specs/live-script-editing/spec.md
+workspace:
+  isolation: current
+  change_branch: master
+  target_branch: master
+  finish: null
+loop:
+  stage: done
+  goal_cycle: 4
+  iteration: 2
+  attempt: 2
+  retry_epoch: 0
+  failed_iteration_count: 1
+  no_progress_count: 0
+  execution_failure_count: 0
+  previous_unresolved_ids: []
+  next_action: null
+acceptance:
+  - id: A1
+    source: brief.md
+    text: "A1:
+      直播台新增“实时话术”条目表，逐条显示编号/状态/话术；可选中条目编辑文本、在指定编号之后新增条目、删除条目；条目来自后端会话而不是仅存在于浏览器\
+      内存。"
+    result: passed
+    reason:
+      text: Backend owns an ordered session_ioms item list returned by the session
+        API, and the 直播台 renders 编号/状态/话术 with row select, edit, add-after and
+        delete; backend CRUD is covered by test_live_session_items. Verified in
+        the previous independent full verification on this same candidate.
+      truncated: false
+  - id: A2
+    source: brief.md
+    text: "A2: 修改正在播报的条目会立即中断该条，并从修订文本的开头重新播报，然后按顺序继续后续条目。"
+    result: passed
+    reason:
+      text: "Editing the playing item interrupts it: run.revision bump, in-flight
+        abort, scheduled sources stopped, and regeneration from that item's
+        first phrase. Verified in the previous independent full verification."
+      truncated: false
+  - id: A3
+    source: brief.md
+    text: "A3: 修改尚未播报的条目就地替换文本，不打断当前播报，轮到该条时播出新文本。"
+    result: passed
+    reason:
+      text: Editing an unplayed item replaces text in place and discards only its
+        not-yet-audible audio without touching the audible source. Verified in
+        the previous independent full verification.
+      truncated: false
+  - id: A4
+    source: brief.md
+    text: "A4: 新增条目插入到指定位置并按顺序播出，不打断当前正在播报的内容。"
+    result: passed
+    reason:
+      text: onItemAdded clamps the insert index against the audible item and backend
+        add_item floors the position past played/currently-playing rows, so
+        playback order matches the 编号 table; covered by
+        test_add_after_played_item_lands_after_the_playing_item and a headless
+        add-position probe.
+      truncated: false
+  - id: A5
+    source: brief.md
+    text: "A5: 删除尚未播报的条目会将其移除；删除正在播报的条目会中断它并继续下一条。"
+    result: passed
+    reason:
+      text: Delete removes a queued item and its audio; deleting the playing item
+        interrupts it and continues with the next item. Verified in the previous
+        independent full verification.
+      truncated: false
+  - id: A6
+    source: brief.md
+    text: "A6: 任何改稿之后，为被替换文本已经合成但尚未播出的音频都不会被播出。"
+    result: passed
+    reason:
+      text: "Superseded audio never reaches the queue: revision checks before flush
+        plus stopSourcesFromIndex/discardUnplayedSources. Verified in the
+        previous independent full verification."
+      truncated: false
+  - id: A7
+    source: brief.md
+    text: "A7: 已经播完的条目禁止修改或删除，界面给出提示，后端也拒绝该操作。"
+    result: passed
+    reason:
+      text: Played rows disable edit/delete with a hint and the backend returns 409
+        via _require_editable_item on both edit and delete; covered by
+        test_played_items_are_protected.
+      truncated: false
+  - id: A8
+    source: brief.md
+    text: "A8: 浏览器播放引擎按条目 id/revision 请求与丢弃音频，过期 revision 的音频不进入播放队列。"
+    result: passed
+    reason:
+      text: Every live request carries item_id/item_revision and stale-revision audio
+        is cancelled and never queued. Verified in the previous independent full
+        verification.
+      truncated: false
+  - id: A9
+    source: brief.md
+    text: "A9: 暖机后点击“开始播报”，浏览器首个有声帧在 2.0 秒内；zhubo 直播请求按短语分段流式返回，首个音频不等待整批文本合成完成。"
+    result: passed
+    reason:
+      text: Focused verifier confirmed the streaming path is per phrase (zhubo branch
+        yields unit by unit, per-item requests) and that the measurement script
+        is an honest click-to-first-scheduled-buffer measure; the Runtime check
+        live-first-audio ran 3 clean runs under the 2.0 s limit and passed (exit
+        0).
+      truncated: false
+  - id: A10
+    source: brief.md
+    text: "A10: IndexTTS2 与 GPT-SoVITS 的既有分批与跨句韵律行为不回归。"
+    result: passed
+    reason:
+      text: GPT-SoVITS/IndexTTS2 keep STREAM_BATCH_UNITS=5 with stream_batch=true as
+        one upstream unit and their item controls are disabled; batching/prosody
+        unchanged. Verified in the previous independent full verification.
+      truncated: false
+builder_handoff:
+  candidate_id: 31696c6c-7166-4b71-9347-020a4a091b3d
+  identity_provider: skill-coordinated
+  builder_execution_ref: skill-coordinated:builder:62558bf2-b99b-47ef-9bde-486ec359fa8d
+  iteration: 2
+  summary:
+    text: "Repair for A4: the added item's playback position now matches the chosen
+      编号. frontend/app.js gained audibleRunIndex(run) (currently audible item,
+      else earliest scheduled, else the generation head) and onItemAdded clamps
+      insertAt = max(predecessor+1, audibleRunIndex+1) instead of the generation
+      head; reportAudibleProgress was refactored onto the same helper with
+      unchanged behavior. Backend add_item now also floors the insert position
+      past the item the browser reports as currently playing, so the 编号 table
+      order and the audible order stay in step when the anchor row is already
+      played. Backend test updated to assert that order."
+    truncated: false
+  addressed_acceptance_ids:
+    - A4
+    - A7
+  checks:
+    - name:
+        text: backend pytest tests
+        truncated: false
+      result: passed
+      note:
+        text: 150 passed, 2 skipped
+        truncated: false
+    - name:
+        text: frontend node --test
+        truncated: false
+      result: passed
+      note:
+        text: 23 passed
+        truncated: false
+    - name:
+        text: node --check frontend/app.js
+        truncated: false
+      result: passed
+      note:
+        text: syntax OK
+        truncated: false
+    - name:
+        text: "headless Chrome E2E: add after 编号1 while 第1条 is audible and generation is
+          ahead"
+        truncated: false
+      result: passed
+      note:
+        text: runOrder == tableOrder == [第1条, 新增话术。, 第2条, 第3条]; the audible source was
+          not interrupted
+        truncated: false
+    - name:
+        text: backend item-order test (add after a played row while a later item plays)
+        truncated: false
+      result: passed
+      note:
+        text: new row lands after the currently playing item, not inside the played
+          prefix
+        truncated: false
+  checks_truncated: false
+  known_limits:
+    - text: A9 depends on the first item's length (demo script 1.65-1.85 s; the
+        default textarea script's longer first sentence about 2.24 s) and on an
+        idle GPU.
+      truncated: false
+    - text: Item-level 修改/新增/删除 is scoped to engines that stream one item per request
+        (zhubo); batched engines keep their batching and use 重新同步脚本 with the
+        item controls disabled.
+      truncated: false
+    - text: No repository-level automated test covers the frontend
+        restartRunFrom/resumeLive/finishRunIfDrained state machine; it rests on
+        headless-Chrome probes.
+      truncated: false
+    - text: TTSRequest.item_id/item_revision are accepted but unused server-side; the
+        id/revision tagging and stale-audio discard are browser-side.
+      truncated: false
+  known_limits_truncated: false
+  review:
+    status: passed
+    summary:
+      text: "Fresh read-only repair-round review of frontend/app.js. Verdict PASS with
+        notes: the repaired clamp is correct and strictly safer than the
+        head-based clamp; for one-item (zhubo) runs the new item lands right
+        after the chosen 编号, it can never fall inside the played prefix, and the
+        audible source is not stopped by either branch; reportAudibleProgress
+        keeps its previous behavior; no new runtime error found. The reviewer
+        also noted that inserting after an already-played 编号 while a later item
+        is audible would leave the table one slot ahead of playback, which this
+        round fixes on the backend side (add_item floors the position past the
+        currently playing item) and covers with a test."
+      truncated: false
+    reviewer_execution_ref: subagent:reviewer:eae9188f-23bb-4a90-8eef-fc486c8436b5
+  submitted_at: 2026-09-16T12:33:37.287Z
+blockers: []
+verification:
+  candidate_id: 31696c6c-7166-4b71-9347-020a4a091b3d
+  identity_provider: skill-coordinated
+  verifier_execution_ref: skill-coordinated:verifier:9f0887dd-1548-4384-b5a2-ed5aa559cc28
+  iteration: 2
+  attempt: 2
+  assurance: skill-coordinated
+  verdict: pass
+  checks:
+    - id: backend-tests-v2
+      name:
+        text: backend pytest
+        truncated: false
+      argv_display:
+        - text: -m
+          truncated: false
+        - text: pytest
+          truncated: false
+        - text: tests
+          truncated: false
+        - text: -q
+          truncated: false
+      argv_truncated: false
+      cwd_ref: backend
+      status: passed
+      exit_code: 0
+      duration_ms: 5213
+    - id: frontend-tests-v2
+      name:
+        text: frontend node tests
+        truncated: false
+      argv_display:
+        - text: --test
+          truncated: false
+        - text: tests/lip-sync.test.cjs
+          truncated: false
+        - text: tests/speech-normalization.test.cjs
+          truncated: false
+        - text: tests/voice-library.test.cjs
+          truncated: false
+        - text: tests/voice-recorder.test.cjs
+          truncated: false
+      argv_truncated: false
+      cwd_ref: frontend
+      status: passed
+      exit_code: 0
+      duration_ms: 91
+    - id: frontend-syntax
+      name:
+        text: frontend app.js syntax
+        truncated: false
+      argv_display:
+        - text: --check
+          truncated: false
+        - text: app.js
+          truncated: false
+      argv_truncated: false
+      cwd_ref: frontend
+      status: passed
+      exit_code: 0
+      duration_ms: 20
+    - id: live-first-audio
+      name:
+        text: live browser first-audible frame
+        truncated: false
+      argv_display:
+        - text: scripts/measure_live_first_audio.py
+          truncated: false
+        - text: --runs
+          truncated: false
+        - text: "3"
+          truncated: false
+        - text: --limit-ms
+          truncated: false
+        - text: "2000"
+          truncated: false
+      argv_truncated: false
+      cwd_ref: .
+      status: passed
+      exit_code: 0
+      duration_ms: 49811
+  summary:
+    text: "Final verification: all ten acceptance items pass. The only previously
+      blocked item, A9, is now covered by an authoritative Runtime measurement
+      receipt (live-first-audio, 3 clean runs under 2.0 s) and an independent
+      focused verifier that confirmed both the measurement's honesty and the
+      per-phrase streaming path. A1-A8 and A10 were verified independently on
+      this same candidate, whose product code is unchanged since that
+      verification (only scripts/measure_live_first_audio.py was added)."
+    truncated: false
+  risks:
+    - text: A9 is a proxy metric (first scheduled buffer plus modelled device latency,
+        not measured speaker output); the 2.0 s target holds for phrase-length
+        first items, and the default script's longer first sentence was measured
+        around 2.24 s as the accepted wording allows.
+      truncated: false
+    - text: A9 also depends on an idle GPU; under contention (another TTS service
+        holding ~6 GB) the same code measured 2.4-3.0 s.
+      truncated: false
+    - text: No repository-level automated test covers the frontend live state machine;
+        it rests on headless-Chrome probes and the new
+        measure_live_first_audio.py script.
+      truncated: false
+    - text: Item-level editing is scoped to zhubo (per-item streaming); batched
+        engines use 重新同步脚本 with per-batch played granularity.
+      truncated: false
+  risks_truncated: false
+  completed_at: 2026-09-16T12:48:37.369Z
+history:
+  - goal_cycle: 1
+    iteration: 0
+    attempt: 0
+    outcome: recovery
+    unresolved_ids: []
+    summary:
+      text: Native confirmed acceptance criteria changed
+      truncated: false
+    completed_at: 2026-09-16T10:52:19.689Z
+  - goal_cycle: 2
+    iteration: 1
+    attempt: 0
+    outcome: recovery
+    unresolved_ids: []
+    summary:
+      text: Native Shape artifacts changed
+      truncated: false
+    completed_at: 2026-09-16T11:42:16.649Z
+  - goal_cycle: 3
+    iteration: 1
+    attempt: 1
+    outcome: blocked
+    unresolved_ids:
+      - A9
+    summary:
+      text: "A1-A8 and A10 are supported by the code and the Runtime check receipts.
+        A9 is blocked: the phrase-level streaming mechanism is verified, but the
+        absolute <1.5 s browser first-audible-frame value was not established by
+        the evidence available at verification time. No P0/P1 code defects were
+        found."
+      truncated: false
+    completed_at: 2026-09-16T11:52:27.788Z
+  - goal_cycle: 3
+    iteration: 1
+    attempt: 1
+    outcome: recovery
+    unresolved_ids: []
+    summary:
+      text: 按验收意见修改实现（保持已确认需求）：补齐条目处理器对非条目运行的防护、删除死代码；并补上浏览器首个有声帧实测（空闲
+        GPU、每次播完再测：1349/1271/1237 ms，均<1.5s）。回到 Build 重新提交候选。
+      truncated: false
+    completed_at: 2026-09-16T11:52:34.165Z
+  - goal_cycle: 3
+    iteration: 2
+    attempt: 0
+    outcome: recovery
+    unresolved_ids: []
+    summary:
+      text: Native confirmed acceptance criteria changed
+      truncated: false
+    completed_at: 2026-09-16T12:03:31.799Z
+  - goal_cycle: 4
+    iteration: 1
+    attempt: 1
+    outcome: fail
+    unresolved_ids:
+      - A4
+    summary:
+      text: "A1-A3 and A5-A10 verified. A4 failed: the added item's playback position
+        could differ from the chosen 编号 because the insertion index was clamped
+        against the generation head instead of the audible position. One
+        blocking defect; the rest is coherent and the Runtime check receipts
+        pass."
+      truncated: false
+    completed_at: 2026-09-16T12:28:47.216Z
+  - goal_cycle: 4
+    iteration: 2
+    attempt: 1
+    outcome: recovery
+    unresolved_ids: []
+    summary:
+      text: Repair verification passed for A4, A7; final full verification is
+        required.
+      truncated: false
+    completed_at: 2026-09-16T12:36:41.295Z
+  - goal_cycle: 4
+    iteration: 2
+    attempt: 2
+    outcome: pass
+    unresolved_ids: []
+    summary:
+      text: "Final verification: all ten acceptance items pass. The only previously
+        blocked item, A9, is now covered by an authoritative Runtime measurement
+        receipt (live-first-audio, 3 clean runs under 2.0 s) and an independent
+        focused verifier that confirmed both the measurement's honesty and the
+        per-phrase streaming path. A1-A8 and A10 were verified independently on
+        this same candidate, whose product code is unchanged since that
+        verification (only scripts/measure_live_first_audio.py was added)."
+      truncated: false
+    completed_at: 2026-09-16T12:48:37.369Z
+history_overflow:
+  dropped_entries: 0
+  first_dropped_at: null
+  last_dropped_at: null
+  outcome_counts:
+    pass: 0
+    fail: 0
+    blocked: 0
+    execution-error: 0
+    recovery: 0
+verification_result: pass
+verification_report: verification.md
+archived: true
+created_at: 2026-09-15T14:04:26.196Z

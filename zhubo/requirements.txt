@@ -1,0 +1,3 @@
+# Install into the existing IndexTTS virtual environment.
+sounddevice==0.5.6
+gradio==5.45.0

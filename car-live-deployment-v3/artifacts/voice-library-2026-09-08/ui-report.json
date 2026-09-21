@@ -1,0 +1,29 @@
+{
+  "errors": [],
+  "checks": [
+    "three built-in cards, separate clone group, fixed voice selection without style controls",
+    "each preset returns distinct real audio, decodes and schedules playback; citations/percentages normalized",
+    "selected speaker survives reload",
+    "fixed built-in voice is used by live streaming playback",
+    "listening evaluation includes built-ins without mutable clone bindings",
+    "local avatar shares speaker selection and retains mouth controls"
+  ],
+  "audio": [
+    {
+      "voice_id": "steady",
+      "bytes": 355884,
+      "sha256": "0467adf57071c286cf1f05be083bf5fc85a9267c66172625442f69fd792edf15"
+    },
+    {
+      "voice_id": "energetic",
+      "bytes": 363564,
+      "sha256": "a97fca54521f6b3252420a4a4c278dac99c36dccf2c25650da3c9fdc8dffba12"
+    },
+    {
+      "voice_id": "friendly",
+      "bytes": 340524,
+      "sha256": "aec472b9f69ac54fa9fc5e711d20fe2e2ca55db9ebb0e84d5d498bc1dae9e309"
+    }
+  ],
+  "passed": true
+}

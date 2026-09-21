@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>连接诊断</title>
+  <style>
+    body { font-family: monospace; padding: 20px; background: #1a1a1a; color: #fff; }
+    .test { margin: 10px 0; padding: 10px; background: #2a2a2a; border-radius: 4px; }
+    .ok { color: #4ade80; }
+    .error { color: #f87171; }
+    .pending { color: #fbbf24; }
+  </style>
+</head>
+<body>
+  <h1>🔍 连接诊断工具</h1>
+  <div id="results"></div>
+
+  <script>
+    const results = document.getElementById('results');
+
+    function log(message, status = 'pending') {
+      const div = document.createElement('div');
+      div.className = `test ${status}`;
+      div.textContent = message;
+      results.appendChild(div);
+      return div;
+    }
+
+    async function diagnose() {
+      // Test 1: 后端健康检查
+      const test1 = log('1️⃣ 测试后端健康检查...', 'pending');
+      try {
+        const response = await fetch('http://127.0.0.1:8000/api/health');
+        const data = await response.json();
+        test1.textContent = `1️⃣ 后端健康检查: ✅ ${data.status} - ${data.service}`;
+        test1.className = 'test ok';
+      } catch (error) {
+        test1.textContent = `1️⃣ 后端健康检查: ❌ ${error.message}`;
+        test1.className = 'test error';
+      }
+
+      // Test 2: CORS检查
+      const test2 = log('2️⃣ 测试CORS跨域设置...', 'pending');
+      try {
+        const response = await fetch('http://127.0.0.1:8000/api/health', {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' }
+        });
+        if (response.ok) {
+          test2.textContent = `2️⃣ CORS跨域: ✅ 正常`;
+          test2.className = 'test ok';
+        }
+      } catch (error) {
+        test2.textContent = `2️⃣ CORS跨域: ❌ ${error.message}`;
+        test2.className = 'test error';
+      }
+
+      // Test 3: TTS状态
+      const test3 = log('3️⃣ 测试TTS服务状态...', 'pending');
+      try {
+        const response = await fetch('http://127.0.0.1:8000/api/tts/status');
+        const data = await response.json();
+        test3.textContent = `3️⃣ TTS服务: ✅ ${data.provider} - ${data.ready ? '就绪' : '未就绪'}`;
+        test3.className = 'test ok';
+      } catch (error) {
+        test3.textContent = `3️⃣ TTS服务: ❌ ${error.message}`;
+        test3.className = 'test error';
+      }
+
+      // Test 4: 前端API常量
+      const test4 = log('4️⃣ 检查前端API配置...', 'pending');
+      try {
+        const response = await fetch('http://127.0.0.1:5173/app.js');
+        const code = await response.text();
+        const apiMatch = code.match(/const API = ['"]([^'"]+)['"]/);
+        if (apiMatch) {
+          const apiUrl = apiMatch[1];
+          test4.textContent = `4️⃣ 前端API配置: ${apiUrl === 'http://127.0.0.1:8000/api' ? '✅' : '⚠️'} ${apiUrl}`;
+          test4.className = apiUrl === 'http://127.0.0.1:8000/api' ? 'test ok' : 'test error';
+        }
+      } catch (error) {
+        test4.textContent = `4️⃣ 前端API配置: ❌ ${error.message}`;
+        test4.className = 'test error';
+      }
+
+      log('📊 诊断完成！', 'ok');
+    }
+
+    diagnose();
+  </script>
+</body>
+</html>

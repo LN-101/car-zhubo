@@ -1,0 +1,284 @@
+schema: comet.native.v4
+name: natural-tts-segmentation
+language: en
+phase: archive
+status: done
+state_version: 10
+brief: brief.md
+shape_confirmation_hash: 9cd2d39558517b5efffe3a97ece2385edf57e7dbc4ed37354ce1c2890a135d12
+spec_changes:
+  - capability: mid-playback-editing
+    operation: modify
+    source: specs/mid-playback-editing/spec.md
+  - capability: streaming-playback
+    operation: modify
+    source: specs/streaming-playback/spec.md
+workspace:
+  isolation: current
+  change_branch: feature/new-model-impl
+  target_branch: feature/new-model-impl
+  finish: null
+loop:
+  stage: done
+  goal_cycle: 2
+  iteration: 1
+  attempt: 1
+  retry_epoch: 0
+  failed_iteration_count: 0
+  no_progress_count: 0
+  execution_failure_count: 0
+  previous_unresolved_ids: []
+  next_action: null
+acceptance:
+  - id: A1
+    source: brief.md
+    text: "A1: Splitting 我们继续看看它的空间和日常使用体验。 returns that complete phrase as one
+      segment; splitting it again also keeps it complete."
+    result: passed
+    reason:
+      text: "User confirmed degraded completion without independent semantic
+        verification: 用户明确接受降级验证结果并授权归档；保留 Runtime 自动检查通过、独立代码审查通过及正式语义 Verifier
+        未执行的区别。"
+      truncated: false
+  - id: A2
+    source: brief.md
+    text: "A2: For phrases longer than either grouping target, application segments
+      end only at existing natural punctuation or end of input; a long
+      unpunctuated phrase is retained without character slicing. Short adjacent
+      phrases may still be grouped using the existing first/later targets."
+    result: passed
+    reason:
+      text: "User confirmed degraded completion without independent semantic
+        verification: 用户明确接受降级验证结果并授权归档；保留 Runtime 自动检查通过、独立代码审查通过及正式语义 Verifier
+        未执行的区别。"
+      truncated: false
+  - id: A3
+    source: brief.md
+    text: "A3: Segmentation preserves spoken content and punctuation in order, keeps
+      decimal numbers such as 58.3 intact, and retains empty/whitespace-input
+      handling and existing boundary-whitespace trimming."
+    result: passed
+    reason:
+      text: "User confirmed degraded completion without independent semantic
+        verification: 用户明确接受降级验证结果并授权归档；保留 Runtime 自动检查通过、独立代码审查通过及正式语义 Verifier
+        未执行的区别。"
+      truncated: false
+  - id: A4
+    source: brief.md
+    text: "A4: Web initial synthesis and newly edited or inserted text submit the
+      reported phrase intact to the synthesis function, with no standalone 验。
+      task. Existing playback, cancellation, edit and parameter tests continue
+      to pass except assertions intentionally superseded by A5/A6."
+    result: passed
+    reason:
+      text: "User confirmed degraded completion without independent semantic
+        verification: 用户明确接受降级验证结果并授权归档；保留 Runtime 自动检查通过、独立代码审查通过及正式语义 Verifier
+        未执行的区别。"
+      truncated: false
+  - id: A5
+    source: brief.md
+    text: "A5: When A has finished and B is partially playing, editing A immediately
+      plays corrected A in full, then restarts the full B script item from its
+      beginning before continuing to C. This includes B containing multiple
+      synthesis phrases whose earlier audio has already been consumed. The Web
+      explanation states that return restarts the original paragraph."
+    result: passed
+    reason:
+      text: "User confirmed degraded completion without independent semantic
+        verification: 用户明确接受降级验证结果并授权归档；保留 Runtime 自动检查通过、独立代码审查通过及正式语义 Verifier
+        未执行的区别。"
+      truncated: false
+  - id: A6
+    source: brief.md
+    text: "A6: Nested corrections return in reverse interruption order and restart
+      each interrupted item from its beginning. An interruption at an item
+      boundary starts the next item normally. Editing after broadcast completion
+      remains text-only; queued edits, inserts and cancellation retain their
+      existing behavior, and correction playback retains bounded resident
+      audio."
+    result: passed
+    reason:
+      text: "User confirmed degraded completion without independent semantic
+        verification: 用户明确接受降级验证结果并授权归档；保留 Runtime 自动检查通过、独立代码审查通过及正式语义 Verifier
+        未执行的区别。"
+      truncated: false
+builder_handoff:
+  candidate_id: cbc57d03-bbde-432f-b0df-b9f88e863c6c
+  identity_provider: skill-coordinated
+  builder_execution_ref: skill-coordinated:builder:eedf20fc-0643-4b37-8378-f7f0c970d309
+  iteration: 1
+  summary:
+    text: Removed application character slicing while retaining natural punctuation
+      grouping. Correction return replaces a started interrupted job with a
+      fresh full-item job, preserving correction/resume metadata and
+      invalidating in-flight results. Updated UI explanation and regression
+      coverage for intact phrases, multi-phrase restart, nested returns and
+      capacity one.
+    truncated: false
+  addressed_acceptance_ids:
+    - A1
+    - A2
+    - A3
+    - A4
+    - A5
+    - A6
+  checks:
+    - name:
+        text: unit suite
+        truncated: false
+      result: passed
+      note:
+        text: "LD_LIBRARY_PATH=/home/ln/AI/zhubo/.local/usr/lib/x86_64-linux-gnu
+          /home/ln/AI/index-tts/.venv/bin/python -m unittest discover -s tests
+          -v: 28 passed"
+        truncated: false
+    - name:
+        text: diff whitespace
+        truncated: false
+      result: passed
+      note:
+        text: git diff --check
+        truncated: false
+    - name:
+        text: real GPU phrase synthesis
+        truncated: false
+      result: passed
+      note:
+        text: "/tmp/natural-tts-segmentation-checks/real-model.json and real-model.log:
+          complete normalized sentence, warmed synthesis 1.2695s, audio 3.4249s,
+          RTF 0.3707; audio saved as sentence.wav"
+        truncated: false
+  checks_truncated: false
+  known_limits:
+    - text: No device playback/acoustic measurement or subjective listening test;
+        arbitrary long unpunctuated phrases retain upstream 120-token splitting.
+      truncated: false
+    - text: This platform exposes no native subagent tool. A separate Pi CLI execution
+        provided read-only code review; no multi-session coordination was
+        selected for formal Verifier fallback.
+      truncated: false
+  known_limits_truncated: false
+  review:
+    status: passed
+    summary:
+      text: Fresh read-only Pi execution reviewed all changed sources/tests, brief,
+        target specs and engine/playback. No concrete defects found; checked
+        phrase integrity, full-item/nested restart, in-flight invalidation and
+        bounded queue. Review did not rerun tests.
+      truncated: false
+    reviewer_execution_ref: /tmp/natural-tts-segmentation-checks/review-session.jsonl
+  submitted_at: 2026-09-11T12:24:04.583Z
+blockers: []
+verification:
+  candidate_id: cbc57d03-bbde-432f-b0df-b9f88e863c6c
+  identity_provider: skill-coordinated
+  verifier_execution_ref: skill-coordinated:verifier:e3819b8c-e724-4a61-b1c9-68a78e4f77ae
+  iteration: 1
+  attempt: 1
+  assurance: user-confirmed-degraded
+  verdict: pass
+  checks:
+    - id: unit-suite
+      name:
+        text: Complete unit suite
+        truncated: false
+      argv_display:
+        - text: LD_LIBRARY_PATH=/home/ln/AI/zhubo/.local/usr/lib/x86_64-linux-gnu
+          truncated: false
+        - text: /home/ln/AI/index-tts/.venv/bin/python
+          truncated: false
+        - text: -m
+          truncated: false
+        - text: unittest
+          truncated: false
+        - text: discover
+          truncated: false
+        - text: -s
+          truncated: false
+        - text: tests
+          truncated: false
+        - text: -v
+          truncated: false
+      argv_truncated: false
+      cwd_ref: .
+      status: passed
+      exit_code: 0
+      duration_ms: 305
+    - id: diff-check
+      name:
+        text: Patch whitespace
+        truncated: false
+      argv_display:
+        - text: diff
+          truncated: false
+        - text: --check
+          truncated: false
+      argv_truncated: false
+      cwd_ref: .
+      status: passed
+      exit_code: 0
+      duration_ms: 5
+  summary:
+    text: 用户明确接受降级验证结果并授权归档；保留 Runtime 自动检查通过、独立代码审查通过及正式语义 Verifier 未执行的区别。
+    truncated: false
+  risks:
+    - text: No independent semantic Verifier execution was available; Runtime checks
+        alone do not cover acceptance semantics.
+      truncated: false
+  risks_truncated: false
+  completed_at: 2026-09-11T12:48:59.440Z
+history:
+  - goal_cycle: 1
+    iteration: 0
+    attempt: 0
+    outcome: recovery
+    unresolved_ids: []
+    summary:
+      text: Native target specification declarations changed
+      truncated: false
+    completed_at: 2026-09-11T12:19:59.368Z
+  - goal_cycle: 2
+    iteration: 1
+    attempt: 1
+    outcome: blocked
+    unresolved_ids:
+      - A1
+      - A2
+      - A3
+      - A4
+      - A5
+      - A6
+    summary:
+      text: Current platform exposes read/search/edit/write/bash tools but no native
+        subagent launch capability. Multi-session coordination was not selected,
+        so the Skill does not permit an independent CLI session as formal
+        Verifier fallback. A fresh separate read-only Pi CLI code review passed
+        during Build; it is not the formal Verifier. Runtime unit suite (28
+        tests) and diff check both passed. Builder also completed real GPU
+        phrase synthesis (1.2695s for 3.4249s audio), without device or acoustic
+        evaluation.
+      truncated: false
+    completed_at: 2026-09-11T12:24:59.597Z
+  - goal_cycle: 2
+    iteration: 1
+    attempt: 1
+    outcome: pass
+    unresolved_ids: []
+    summary:
+      text: 用户明确接受降级验证结果并授权归档；保留 Runtime 自动检查通过、独立代码审查通过及正式语义 Verifier 未执行的区别。
+      truncated: false
+    completed_at: 2026-09-11T12:48:59.440Z
+history_overflow:
+  dropped_entries: 0
+  first_dropped_at: null
+  last_dropped_at: null
+  outcome_counts:
+    pass: 0
+    fail: 0
+    blocked: 0
+    execution-error: 0
+    recovery: 0
+verification_result: pass
+verification_report: verification.md
+archived: true
+created_at: 2026-09-11T12:08:41.714Z

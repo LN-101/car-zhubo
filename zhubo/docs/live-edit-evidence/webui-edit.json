@@ -1,0 +1,927 @@
+{
+  "state": "finished",
+  "error": null,
+  "now_playing": null,
+  "items": [
+    {
+      "id": 1,
+      "text": "更正一下，欢迎了解车型信息。",
+      "revision": 2,
+      "status": "已播放"
+    },
+    {
+      "id": 3,
+      "text": "这款车型适合城市通勤。接下来看看车辆空间。座舱设计方便日常使用。",
+      "revision": 0,
+      "status": "已播放"
+    },
+    {
+      "id": 4,
+      "text": "周末出行也能轻松安排。现在介绍车辆的续航表现。",
+      "revision": 0,
+      "status": "已播放"
+    },
+    {
+      "id": 5,
+      "text": "实际续航与路况有关。接着看看辅助驾驶配置。驾驶时请保持注意力。",
+      "revision": 0,
+      "status": "已播放"
+    },
+    {
+      "id": 6,
+      "text": "欢迎继续了解更多细节。下面看看车内储物空间。",
+      "revision": 0,
+      "status": "已播放"
+    },
+    {
+      "id": 7,
+      "text": "日常物品可以方便收纳。接下来介绍后排乘坐体验。",
+      "revision": 0,
+      "status": "已播放"
+    },
+    {
+      "id": 8,
+      "text": "具体配置请以实际车辆为准。欢迎在直播间交流用车需求。",
+      "revision": 0,
+      "status": "已播放"
+    },
+    {
+      "id": 9,
+      "text": "感谢观看，本条话术已经更新。",
+      "revision": 1,
+      "status": "已播放"
+    },
+    {
+      "id": 10,
+      "text": "这是直播中新增的话术。",
+      "revision": 0,
+      "status": "已播放"
+    }
+  ],
+  "parameters": {
+    "speed": 1,
+    "volume": 100,
+    "tone": "steady",
+    "intensity": 0.7,
+    "duration_factor": 1.0,
+    "emo_vector": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.5599999999999999
+    ]
+  },
+  "parameter_events": [
+    {
+      "at_s": 0.0,
+      "speed": 1.0,
+      "volume": 100.0,
+      "tone": "neutral",
+      "intensity": 0.0,
+      "duration_factor": 1.0,
+      "emo_vector": null
+    },
+    {
+      "at_s": 3.9895090570007596,
+      "speed": 1.25,
+      "volume": 50,
+      "tone": "warm",
+      "intensity": 0.6,
+      "duration_factor": 0.8,
+      "emo_vector": [
+        0.27,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.21
+      ]
+    },
+    {
+      "at_s": 12.037236284000755,
+      "speed": 0.8,
+      "volume": 150,
+      "tone": "energetic",
+      "intensity": 0.5,
+      "duration_factor": 1.25,
+      "emo_vector": [
+        0.3,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.1,
+        0.0
+      ]
+    },
+    {
+      "at_s": 15.068393558000025,
+      "speed": 1,
+      "volume": 100,
+      "tone": "steady",
+      "intensity": 0.7,
+      "duration_factor": 1.0,
+      "emo_vector": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.5599999999999999
+      ]
+    }
+  ],
+  "voice": "/home/ln/AI/index-tts/examples/voice_01.wav",
+  "environment": {
+    "initialization_s": 8.999255828999594,
+    "repo": "/home/ln/AI/index-tts",
+    "gpu": "NVIDIA GeForce RTX 5070 Ti Laptop GPU",
+    "torch": "2.8.0+cu128",
+    "sample_rate": 22050,
+    "bf16": true,
+    "num_beams": 1,
+    "threads": 4,
+    "warmup_s": 1.5530475029991067
+  },
+  "measurement": "PortAudio DAC timestamps; not acoustic capture. WAV includes callback gaps and applied volume.",
+  "first_pcm_s": 0.8325435660008225,
+  "first_device_output_s": 1.0425773183560523,
+  "first_output_within_3s": true,
+  "synthesis_wall_s": 43.67316759500136,
+  "streamed_before_synthesis_done": true,
+  "audio_s": 53.91673469387755,
+  "rtf": 0.35935918920192234,
+  "playback_s": 49.33079110315361,
+  "underrun_events": 2,
+  "underrun_s": 3.5294331065759637,
+  "device_underflows": 0,
+  "edits": [
+    {
+      "id": 1,
+      "kind": "current",
+      "item_id": 1,
+      "revision": 1,
+      "at_s": 1.0066030890011461,
+      "regeneration_s": 1.9432669569996506,
+      "first_output_s": 2.1490031472549163,
+      "resume_s": 6.653771504852557
+    },
+    {
+      "id": 2,
+      "kind": "queued",
+      "item_id": 9,
+      "revision": 1,
+      "at_s": 3.3305267640007514,
+      "regeneration_s": 37.57402154900046,
+      "first_output_s": 42.37565969042429,
+      "resume_s": null
+    },
+    {
+      "id": 3,
+      "kind": "add",
+      "item_id": 10,
+      "revision": 0,
+      "at_s": 3.4313089759998547,
+      "regeneration_s": 40.24185620300159,
+      "first_output_s": 44.74773843751973,
+      "resume_s": null
+    },
+    {
+      "id": 4,
+      "kind": "add",
+      "item_id": 11,
+      "revision": 0,
+      "at_s": 3.63520032300039,
+      "regeneration_s": null,
+      "first_output_s": null,
+      "resume_s": null
+    },
+    {
+      "id": 5,
+      "kind": "delete",
+      "item_id": 11,
+      "revision": 0,
+      "at_s": 3.838231777001056,
+      "regeneration_s": null,
+      "first_output_s": null,
+      "resume_s": null
+    },
+    {
+      "id": 6,
+      "kind": "correction",
+      "item_id": 1,
+      "revision": 2,
+      "at_s": 7.6310217210011615,
+      "regeneration_s": 1.6144693749993166,
+      "first_output_s": 1.817148389200156,
+      "resume_s": 4.301754138989054,
+      "interrupted_item_id": 2,
+      "interrupted_frame": 4096
+    },
+    {
+      "id": 7,
+      "kind": "delete",
+      "item_id": 2,
+      "revision": 0,
+      "at_s": 11.935565015000975,
+      "regeneration_s": null,
+      "first_output_s": 0.2061601619643625,
+      "resume_s": 0.2061601619643625
+    }
+  ],
+  "generations": [
+    {
+      "id": 0,
+      "item_id": 1,
+      "revision": 0,
+      "phrase": "欢迎来到直播间。",
+      "at_s": 0.8325199090013484,
+      "inference_s": 0.8225476309999067,
+      "audio_s": 2.2755555555555556,
+      "parameters": {
+        "speed": 1.0,
+        "volume": 100.0,
+        "tone": "neutral",
+        "intensity": 0.0,
+        "duration_factor": 1.0,
+        "emo_vector": null
+      },
+      "discarded": false
+    },
+    {
+      "id": 1,
+      "item_id": 2,
+      "revision": 0,
+      "phrase": "今天我们介绍欧拉五纯电版。",
+      "at_s": 2.224036180001349,
+      "inference_s": 1.3914552969999932,
+      "audio_s": 3.5874829931972787,
+      "parameters": {
+        "speed": 1.0,
+        "volume": 100.0,
+        "tone": "neutral",
+        "intensity": 0.0,
+        "duration_factor": 1.0,
+        "emo_vector": null
+      },
+      "discarded": true
+    },
+    {
+      "id": 2,
+      "item_id": 1,
+      "revision": 1,
+      "phrase": "欢迎来到直播间。",
+      "at_s": 2.949839378001343,
+      "inference_s": 0.7257492799999454,
+      "audio_s": 1.9156462585034013,
+      "parameters": {
+        "speed": 1.0,
+        "volume": 100.0,
+        "tone": "neutral",
+        "intensity": 0.0,
+        "duration_factor": 1.0,
+        "emo_vector": null
+      },
+      "discarded": false
+    },
+    {
+      "id": 3,
+      "item_id": 1,
+      "revision": 1,
+      "phrase": "这里是修订后的开场。",
+      "at_s": 3.826631683999949,
+      "inference_s": 0.8767319969992968,
+      "audio_s": 2.589024943310658,
+      "parameters": {
+        "speed": 1.0,
+        "volume": 100.0,
+        "tone": "neutral",
+        "intensity": 0.0,
+        "duration_factor": 1.0,
+        "emo_vector": null
+      },
+      "discarded": false
+    },
+    {
+      "id": 4,
+      "item_id": 2,
+      "revision": 0,
+      "phrase": "今天我们介绍欧拉五纯电版。",
+      "at_s": 4.745940607001103,
+      "inference_s": 0.9192499539985874,
+      "audio_s": 2.8328344671201813,
+      "parameters": {
+        "speed": 1.0,
+        "volume": 100.0,
+        "tone": "neutral",
+        "intensity": 0.0,
+        "duration_factor": 1.0,
+        "emo_vector": null
+      },
+      "discarded": false
+    },
+    {
+      "id": 5,
+      "item_id": 3,
+      "revision": 0,
+      "phrase": "这款车型适合城市通勤。",
+      "at_s": 5.7299945230006415,
+      "inference_s": 0.8742014260005817,
+      "audio_s": 2.136235827664399,
+      "parameters": {
+        "speed": 1.25,
+        "volume": 50,
+        "tone": "warm",
+        "intensity": 0.6,
+        "duration_factor": 0.8,
+        "emo_vector": [
+          0.27,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.21
+        ]
+      },
+      "discarded": false
+    },
+    {
+      "id": 6,
+      "item_id": 3,
+      "revision": 0,
+      "phrase": "接下来看看车辆空间。",
+      "at_s": 8.27895899699979,
+      "inference_s": 0.8417012520003482,
+      "audio_s": 1.811156462585034,
+      "parameters": {
+        "speed": 1.25,
+        "volume": 50,
+        "tone": "warm",
+        "intensity": 0.6,
+        "duration_factor": 0.8,
+        "emo_vector": [
+          0.27,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.21
+        ]
+      },
+      "discarded": false
+    },
+    {
+      "id": 7,
+      "item_id": 1,
+      "revision": 2,
+      "phrase": "更正一下，欢迎了解车型信息。",
+      "at_s": 9.245459899000707,
+      "inference_s": 0.9662930680005957,
+      "audio_s": 2.48453514739229,
+      "parameters": {
+        "speed": 1.25,
+        "volume": 50,
+        "tone": "warm",
+        "intensity": 0.6,
+        "duration_factor": 0.8,
+        "emo_vector": [
+          0.27,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.21
+        ]
+      },
+      "discarded": false
+    },
+    {
+      "id": 8,
+      "item_id": 3,
+      "revision": 0,
+      "phrase": "座舱设计方便日常使用。",
+      "at_s": 12.775458818001425,
+      "inference_s": 0.8396464449997438,
+      "audio_s": 2.066575963718821,
+      "parameters": {
+        "speed": 1.25,
+        "volume": 50,
+        "tone": "warm",
+        "intensity": 0.6,
+        "duration_factor": 0.8,
+        "emo_vector": [
+          0.27,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.21
+        ]
+      },
+      "discarded": false
+    },
+    {
+      "id": 9,
+      "item_id": 4,
+      "revision": 0,
+      "phrase": "周末出行也能轻松安排。",
+      "at_s": 14.920366794000074,
+      "inference_s": 0.8697617720008566,
+      "audio_s": 3.0418140589569163,
+      "parameters": {
+        "speed": 0.8,
+        "volume": 150,
+        "tone": "energetic",
+        "intensity": 0.5,
+        "duration_factor": 1.25,
+        "emo_vector": [
+          0.3,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.1,
+          0.0
+        ]
+      },
+      "discarded": false
+    },
+    {
+      "id": 10,
+      "item_id": 4,
+      "revision": 0,
+      "phrase": "现在介绍车辆的续航表现。",
+      "at_s": 16.74189287000081,
+      "inference_s": 0.8780827250011498,
+      "audio_s": 2.6354648526077096,
+      "parameters": {
+        "speed": 1,
+        "volume": 100,
+        "tone": "steady",
+        "intensity": 0.7,
+        "duration_factor": 1.0,
+        "emo_vector": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.5599999999999999
+        ]
+      },
+      "discarded": false
+    },
+    {
+      "id": 11,
+      "item_id": 5,
+      "revision": 0,
+      "phrase": "实际续航与路况有关。",
+      "at_s": 18.705142018001425,
+      "inference_s": 0.7720603590005339,
+      "audio_s": 2.2755555555555556,
+      "parameters": {
+        "speed": 1,
+        "volume": 100,
+        "tone": "steady",
+        "intensity": 0.7,
+        "duration_factor": 1.0,
+        "emo_vector": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.5599999999999999
+        ]
+      },
+      "discarded": false
+    },
+    {
+      "id": 12,
+      "item_id": 5,
+      "revision": 0,
+      "phrase": "接着看看辅助驾驶配置。",
+      "at_s": 21.857029628999953,
+      "inference_s": 0.8945057630007796,
+      "audio_s": 2.3103854875283445,
+      "parameters": {
+        "speed": 1,
+        "volume": 100,
+        "tone": "steady",
+        "intensity": 0.7,
+        "duration_factor": 1.0,
+        "emo_vector": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.5599999999999999
+        ]
+      },
+      "discarded": false
+    },
+    {
+      "id": 13,
+      "item_id": 5,
+      "revision": 0,
+      "phrase": "驾驶时请保持注意力。",
+      "at_s": 24.40100528000039,
+      "inference_s": 0.7930742270000337,
+      "audio_s": 2.1942857142857144,
+      "parameters": {
+        "speed": 1,
+        "volume": 100,
+        "tone": "steady",
+        "intensity": 0.7,
+        "duration_factor": 1.0,
+        "emo_vector": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.5599999999999999
+        ]
+      },
+      "discarded": false
+    },
+    {
+      "id": 14,
+      "item_id": 6,
+      "revision": 0,
+      "phrase": "欢迎继续了解更多细节。",
+      "at_s": 26.781837472000916,
+      "inference_s": 0.8907846439997229,
+      "audio_s": 2.426485260770975,
+      "parameters": {
+        "speed": 1,
+        "volume": 100,
+        "tone": "steady",
+        "intensity": 0.7,
+        "duration_factor": 1.0,
+        "emo_vector": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.5599999999999999
+        ]
+      },
+      "discarded": false
+    },
+    {
+      "id": 15,
+      "item_id": 6,
+      "revision": 0,
+      "phrase": "下面看看车内储物空间。",
+      "at_s": 29.05698966000091,
+      "inference_s": 0.8625250200002483,
+      "audio_s": 2.4729251700680273,
+      "parameters": {
+        "speed": 1,
+        "volume": 100,
+        "tone": "steady",
+        "intensity": 0.7,
+        "duration_factor": 1.0,
+        "emo_vector": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.5599999999999999
+        ]
+      },
+      "discarded": false
+    },
+    {
+      "id": 16,
+      "item_id": 7,
+      "revision": 0,
+      "phrase": "日常物品可以方便收纳。",
+      "at_s": 31.20146860100067,
+      "inference_s": 0.8096662779989856,
+      "audio_s": 2.3103854875283445,
+      "parameters": {
+        "speed": 1,
+        "volume": 100,
+        "tone": "steady",
+        "intensity": 0.7,
+        "duration_factor": 1.0,
+        "emo_vector": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.5599999999999999
+        ]
+      },
+      "discarded": false
+    },
+    {
+      "id": 17,
+      "item_id": 7,
+      "revision": 0,
+      "phrase": "接下来介绍后排乘坐体验。",
+      "at_s": 33.673186701000304,
+      "inference_s": 0.8704236920002586,
+      "audio_s": 2.426485260770975,
+      "parameters": {
+        "speed": 1,
+        "volume": 100,
+        "tone": "steady",
+        "intensity": 0.7,
+        "duration_factor": 1.0,
+        "emo_vector": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.5599999999999999
+        ]
+      },
+      "discarded": false
+    },
+    {
+      "id": 18,
+      "item_id": 8,
+      "revision": 0,
+      "phrase": "具体配置请以实际车辆为准。",
+      "at_s": 36.2401110460014,
+      "inference_s": 0.9416681520015118,
+      "audio_s": 2.8676643990929707,
+      "parameters": {
+        "speed": 1,
+        "volume": 100,
+        "tone": "steady",
+        "intensity": 0.7,
+        "duration_factor": 1.0,
+        "emo_vector": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.5599999999999999
+        ]
+      },
+      "discarded": false
+    },
+    {
+      "id": 19,
+      "item_id": 8,
+      "revision": 0,
+      "phrase": "欢迎在直播间交流用车需求。",
+      "at_s": 38.48776798200015,
+      "inference_s": 0.8851571820014215,
+      "audio_s": 2.589024943310658,
+      "parameters": {
+        "speed": 1,
+        "volume": 100,
+        "tone": "steady",
+        "intensity": 0.7,
+        "duration_factor": 1.0,
+        "emo_vector": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.5599999999999999
+        ]
+      },
+      "discarded": false
+    },
+    {
+      "id": 20,
+      "item_id": 9,
+      "revision": 1,
+      "phrase": "感谢观看，本条话术已经更新。",
+      "at_s": 40.904510603000745,
+      "inference_s": 0.8701949750011408,
+      "audio_s": 2.4729251700680273,
+      "parameters": {
+        "speed": 1,
+        "volume": 100,
+        "tone": "steady",
+        "intensity": 0.7,
+        "duration_factor": 1.0,
+        "emo_vector": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.5599999999999999
+        ]
+      },
+      "discarded": false
+    },
+    {
+      "id": 21,
+      "item_id": 10,
+      "revision": 0,
+      "phrase": "这是直播中新增的话术。",
+      "at_s": 43.67313483200087,
+      "inference_s": 0.779992925001352,
+      "audio_s": 2.1942857142857144,
+      "parameters": {
+        "speed": 1,
+        "volume": 100,
+        "tone": "steady",
+        "intensity": 0.7,
+        "duration_factor": 1.0,
+        "emo_vector": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.5599999999999999
+        ]
+      },
+      "discarded": false
+    }
+  ],
+  "playback": [
+    {
+      "item_id": 1,
+      "segment_id": 0,
+      "frame": 0,
+      "at_s": 1.0425773183560523
+    },
+    {
+      "item_id": 1,
+      "segment_id": 2,
+      "frame": 0,
+      "at_s": 3.1556062362560624
+    },
+    {
+      "item_id": 1,
+      "segment_id": 3,
+      "frame": 42240,
+      "at_s": 5.071303727451089
+    },
+    {
+      "item_id": 2,
+      "segment_id": 4,
+      "frame": 0,
+      "at_s": 7.660374593853703
+    },
+    {
+      "item_id": 1,
+      "segment_id": 7,
+      "frame": 0,
+      "at_s": 9.448170110201318
+    },
+    {
+      "item_id": 2,
+      "segment_id": 4,
+      "frame": 4096,
+      "at_s": 11.932775859990215
+    },
+    {
+      "item_id": 3,
+      "segment_id": 5,
+      "frame": 0,
+      "at_s": 12.141725176965338
+    },
+    {
+      "item_id": 3,
+      "segment_id": 6,
+      "frame": 47104,
+      "at_s": 14.277950984454947
+    },
+    {
+      "item_id": 3,
+      "segment_id": 8,
+      "frame": 87040,
+      "at_s": 16.08912306217826
+    },
+    {
+      "item_id": 4,
+      "segment_id": 9,
+      "frame": 0,
+      "at_s": 18.155742773216843
+    },
+    {
+      "item_id": 4,
+      "segment_id": 10,
+      "frame": 67072,
+      "at_s": 21.197491949178584
+    },
+    {
+      "item_id": 5,
+      "segment_id": 11,
+      "frame": 0,
+      "at_s": 23.832989930450132
+    },
+    {
+      "item_id": 5,
+      "segment_id": 12,
+      "frame": 50176,
+      "at_s": 26.108699941043817
+    },
+    {
+      "item_id": 5,
+      "segment_id": 13,
+      "frame": 101120,
+      "at_s": 28.418913110124777
+    },
+    {
+      "item_id": 6,
+      "segment_id": 14,
+      "frame": 0,
+      "at_s": 30.613169901115036
+    },
+    {
+      "item_id": 6,
+      "segment_id": 15,
+      "frame": 53504,
+      "at_s": 33.03968845876989
+    },
+    {
+      "item_id": 7,
+      "segment_id": 16,
+      "frame": 0,
+      "at_s": 35.51264469370857
+    },
+    {
+      "item_id": 7,
+      "segment_id": 17,
+      "frame": 50944,
+      "at_s": 37.823023038314204
+    },
+    {
+      "item_id": 8,
+      "segment_id": 18,
+      "frame": 0,
+      "at_s": 40.249529023660436
+    },
+    {
+      "item_id": 8,
+      "segment_id": 19,
+      "frame": 63232,
+      "at_s": 43.11717984780444
+    },
+    {
+      "item_id": 9,
+      "segment_id": 20,
+      "frame": 0,
+      "at_s": 45.706186454425044
+    },
+    {
+      "item_id": 10,
+      "segment_id": 21,
+      "frame": 0,
+      "at_s": 48.179047413519584
+    }
+  ],
+  "output": "/home/ln/AI/zhubo/outputs/live-edit-validation/broadcasts/20260911-191827-073546"
+}
