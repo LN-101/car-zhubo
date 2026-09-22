@@ -482,6 +482,11 @@ function initializeStudioDraft() {
   }
   let draft = {};
   try { draft = JSON.parse(sessionStorage.getItem('carLiveStudioDraft') || '{}') || {}; } catch {}
+  // The packaged script opened with “老板，”. A tab that stored that wording
+  // must not keep hiding the new greeting, while edited scripts stay untouched.
+  if (typeof draft.script === 'string' && draft.script.startsWith('老板，今天为大家介绍')) {
+    draft.script = '欢迎各位老板，' + draft.script.slice(3);
+  }
   for (const id of DRAFT_FIELDS) {
     const node = document.querySelector('#' + id);
     if (!node) continue;
@@ -762,11 +767,12 @@ function selectedVoiceIsClone() {
   return document.querySelector('#voice')?.selectedOptions[0]?.dataset.cloned === '1';
 }
 
-function selectedVoiceWantsGpt() {
-  const option = document.querySelector('#voice')?.selectedOptions[0];
-  if (!option) return true;
-  // Packaged speakers and uploaded clones use server TTS; browser audio is explicit.
-  return option.dataset.provider === 'gpt-sovits' || option.dataset.cloned === '1' || option.value !== 'browser-default';
+// Every picker entry — packaged speakers, uploaded clones and 系统默认 — is
+// synthesized by the configured engine, so Web Speech is only reachable while
+// that engine is missing or unreachable, never instead of a usable selection.
+function serverSpeechUnavailable() {
+  if (!ttsStatus) return false;
+  return ttsStatus.provider === 'browser' || ttsStatus.configured === false || ttsStatus.reachable === false;
 }
 
 function initializeVoicePicker(voices) {
@@ -784,7 +790,6 @@ function initializeVoicePicker(voices) {
       card.querySelector('.voice-selected-label').hidden = !selected;
       card.querySelector('.voice-use').setAttribute('aria-pressed', String(selected));
     });
-    ttsMode = selectedVoiceWantsGpt() ? 'gpt-sovits' : 'browser';
     return voiceId;
   };
   if (select) {
@@ -842,12 +847,12 @@ async function studio() {
     }
 
     ttsStatus = tts;
-    ttsMode = tts.provider === 'browser' ? 'browser' : 'gpt-sovits';
+    ttsMode = serverSpeechUnavailable() ? 'browser' : 'gpt-sovits';
     const first = dash.vehicles[0] || {brand:'欧拉',series:'欧拉5 EV',year:'2026'};
     layout('直播控制台', '导入或编写直播话术，边生成边播放；修改正在播报的条目会立即中断并从修订文本开头重播。', `
     <section class="panel live-settings-panel"><div class="panel-body fields studio-settings"><label>车型<select id="vehicle">${vehicleOptions(dash.vehicles)}</select></label><label>音色<select id="voice">${VoiceLibrary.options(voices, esc)}</select></label><label>语速 <output id="speedOut">1.00</output><input id="speed" type="range" min="0.7" max="1.4" value="1.00" step="0.01"></label><label>音量 <output id="volumeOut">100%</output><input id="volume" type="range" min="0" max="1" value="1" step="0.05"></label><label>语调 <output id="pitchOut">0</output><input id="pitch" type="range" min="-4" max="4" value="0" step="1"></label><label>情感 <select id="tone"><option value="neutral">中性</option><option value="warm">温暖</option><option value="energetic">活力</option><option value="steady">稳重</option></select></label><label>强度 <output id="intensityOut">30%</output><input id="intensity" type="range" min="0" max="1" value="0.3" step="0.05"></label><span id="ttsMode">检查语音引擎…</span></div></section>
     <details class="studio-preview"><summary>音色试听<span id="selectedVoiceName"></span></summary><div class="panel-body"><textarea id="voicePreviewText" class="question" aria-label="试听文案">大家好，欢迎来到汽车直播间，今天给大家介绍这款车型。</textarea><div class="controls"><button class="btn" id="previewVoice">试听</button><button class="btn secondary" id="stopPreview">停止</button></div></div></details>
-    <div class="studio"><section class="panel"><div class="panel-head"><h2>直播脚本</h2><span id="version"></span></div><div class="panel-body"><div class="inline-tools"><label class="btn secondary file-btn">导入脚本<input id="scriptFile" type="file" accept=".txt,.md" hidden></label><button class="btn secondary" id="generate">生成脚本</button></div><textarea id="script">老板，今天为大家介绍欧拉 5 EV 2026 款 580km 激光雷达版。它的 CLTC 纯电续航为 580 公里，轴距 2720 毫米，最大功率 150 千瓦。</textarea><p id="scriptUnits" class="script-units"></p><div class="controls"><button class="btn" id="play">开始播报</button><button class="btn secondary" id="pause">暂停</button><button class="btn secondary" id="stop">停止</button><button class="btn secondary" id="revise">重新同步脚本</button><span id="ttsLatency" role="status" style="margin-left:12px;color:#9ba3af;font-size:13px;"></span></div><p id="playstate">当前句 0 / 0 · 待机</p><p id="playunit" class="hint"></p></div></section>
+    <div class="studio"><section class="panel"><div class="panel-head"><h2>直播脚本</h2><span id="version"></span></div><div class="panel-body"><div class="inline-tools"><label class="btn secondary file-btn">导入脚本<input id="scriptFile" type="file" accept=".txt,.md" hidden></label><button class="btn secondary" id="generate">生成脚本</button></div><textarea id="script">欢迎各位老板，今天为大家介绍欧拉 5 EV 2026 款 580km 激光雷达版。它的 CLTC 纯电续航为 580 公里，轴距 2720 毫米，最大功率 150 千瓦。</textarea><p id="scriptUnits" class="script-units"></p><div class="controls"><button class="btn" id="play">开始播报</button><button class="btn secondary" id="pause">暂停</button><button class="btn secondary" id="stop">停止</button><button class="btn secondary" id="revise">重新同步脚本</button><span id="ttsLatency" role="status" style="margin-left:12px;color:#9ba3af;font-size:13px;"></span></div><p id="playstate">当前句 0 / 0 · 待机</p><p id="playunit" class="hint"></p></div></section>
     <section class="panel"><div class="panel-head"><h2>实时话术</h2><span id="itemState">未开始</span></div><div class="panel-body"><table class="item-table"><thead><tr><th>编号</th><th>状态</th><th>话术</th></tr></thead><tbody id="itemRows"></tbody></table><div class="controls item-controls"><label>编号 <input id="itemId" type="number" min="1" step="1"></label><input id="itemText" class="question" placeholder="修改 / 新增话术"><label>新增到此编号之后 <input id="itemAfter" type="number" min="0" step="1" value="0"></label><button class="btn secondary" id="itemEdit">修改</button><button class="btn secondary" id="itemAdd">新增</button><button class="btn secondary" id="itemDelete">删除</button></div><p id="itemHint" class="hint"></p></div></section>
     <aside class="panel"><div class="panel-head"><h2>观众问答</h2></div><div class="panel-body"><textarea class="question" id="question">欧拉 5 EV 的续航是多少？</textarea><button class="btn" id="ask">检索回答</button><button class="btn secondary" id="speakAnswer">语音播报</button><div id="answer"></div></div></aside></div>`, {eyebrow:'核心模块 02', tag:'流式 TTS 与动态改稿'});
 
@@ -1004,7 +1009,7 @@ async function avatar() {
     }
 
     ttsStatus = tts;
-    ttsMode = tts.provider === 'browser' ? 'browser' : 'gpt-sovits';
+    ttsMode = serverSpeechUnavailable() ? 'browser' : 'gpt-sovits';
     currentAnswer = '';
     const first = dash.vehicles[0] || {brand:'欧拉',series:'欧拉5 EV',year:'2026'};
     const voiceOptions = VoiceLibrary.options(voices, esc);
@@ -1013,7 +1018,7 @@ async function avatar() {
       <section class="panel avatar-stage-panel">
         <div class="panel-head"><h2>数字人</h2><span>Live2D · 胡桃</span></div>
         <div class="panel-body avatar-stage-wrap">
-          <div id="avatarStage" class="avatar-stage"><canvas id="avatarCanvas"></canvas><div class="avatar-badge">LIVE</div><div id="avatarModelState" class="avatar-model-state">加载中…</div></div>
+          <div id="avatarStage" class="avatar-stage"><canvas id="avatarCanvas"></canvas><div class="avatar-badge">LIVE</div><div class="avatar-stage-status"><div id="avatarModelState" class="avatar-model-state">加载中…</div><p class="avatar-model-notice">模型仅供演示使用，非商用</p></div></div>
           <div class="avatar-stage-note"><span class="live-dot"></span><span>实时口型同步</span></div>
         </div>
       </section>
@@ -1021,7 +1026,7 @@ async function avatar() {
         <section class="panel"><div class="panel-head"><h2>播报控制</h2><span id="ttsMode">${esc(tts.provider_label || '语音服务')}</span></div><div class="panel-body">
           <div class="fields studio-settings avatar-settings"><label>车型<select id="vehicle">${vehicleOptions(dash.vehicles)}</select></label><label>音色<select id="voice">${voiceOptions}</select></label><label>语速 <output id="speedOut">1.00</output><input id="speed" type="range" min="0.7" max="1.4" value="1.00" step="0.01"></label><label>音量 <output id="volumeOut">100%</output><input id="volume" type="range" min="0" max="1" value="1" step="0.05"></label><label>语调 <output id="pitchOut">0</output><input id="pitch" type="range" min="-4" max="4" value="0" step="1"></label><label>情感 <select id="tone"><option value="neutral">中性</option><option value="warm">温暖</option><option value="energetic">活力</option><option value="steady">稳重</option></select></label><label>强度 <output id="intensityOut">30%</output><input id="intensity" type="range" min="0" max="1" value="0.3" step="0.05"></label></div>
           <div class="inline-tools"><label class="btn secondary file-btn">导入脚本<input id="scriptFile" type="file" accept=".txt,.md" hidden></label><button class="btn secondary" id="generate">生成脚本</button></div>
-          <textarea id="script" class="avatar-script">老板，今天为大家介绍欧拉 5 EV 2026 款 580km 激光雷达版。它的 CLTC 纯电续航为 580 公里，轴距 2720 毫米，最大功率 150 千瓦。</textarea><p id="scriptUnits" class="script-units"></p>
+          <textarea id="script" class="avatar-script">欢迎各位老板，今天为大家介绍欧拉 5 EV 2026 款 580km 激光雷达版。它的 CLTC 纯电续航为 580 公里，轴距 2720 毫米，最大功率 150 千瓦。</textarea><p id="scriptUnits" class="script-units"></p>
           <div class="controls"><button class="btn" id="play">开始播报</button><button class="btn secondary" id="pause">暂停</button><button class="btn secondary" id="stop">停止</button><button class="btn secondary" id="revise">重新同步脚本</button><span id="ttsLatency" role="status" style="margin-left:12px;color:#9ba3af;font-size:13px;"></span></div>
           <p id="playstate">当前句 0 / 0 · 待机</p><p id="playunit" class="hint"></p><p id="version" class="hint"></p>
           <h3 class="avatar-section-title">实时话术</h3>
@@ -1182,6 +1187,9 @@ function itemStatusClass(status) {
   return status === '已播放' ? 'played' : status === '播放中' ? 'playing' : 'pending';
 }
 
+// 已播报条目在前后端都不可改删。点击时用弹窗说明原因，后端仍以 409 兜底。
+const PLAYED_ITEM_NOTICE = '该条目已播报，不能修改或删除。请在后续待播条目中修改，或新增话术。';
+
 function renderItemTable() {
   const body = document.querySelector('#itemRows');
   if (!body || !body.isConnected) return;
@@ -1195,7 +1203,8 @@ function renderItemTable() {
       safeSet('#itemId', 'value', item.id);
       if (item.status === '已播放') {
         safeSet('#itemText', 'value', '');
-        setItemHint('该条目已播报，不能修改或删除。请在后续待播条目中修改，或新增话术。');
+        setItemHint(PLAYED_ITEM_NOTICE);
+        alert(PLAYED_ITEM_NOTICE);
       } else if (!providerStreamsPerItem()) {
         safeSet('#itemText', 'value', item.text);
         setItemHint('当前语音引擎不支持条目级改稿；请使用“重新同步脚本”。');
@@ -1752,7 +1761,7 @@ function speakBrowserUnit(run) {
     if (run.stopped || liveRun !== run) return;
     if (!run.hasScheduledAudio) stopLatencyTimer(performance.now() - run.requestedAt);
     run.hasScheduledAudio = true;
-    setState(`浏览器语音播报 · 第 ${index + 1} / ${run.q.length} 句`, run.q[index]); saveLiveState('playing', index);
+    setState(`语音服务不可用，浏览器语音播报 · 第 ${index + 1} / ${run.q.length} 句`, run.q[index]); saveLiveState('playing', index);
   };
   utterance.onend = () => { if (!run.stopped) speakBrowserUnit(run); };
   utterance.onerror = event => {
@@ -1766,10 +1775,8 @@ function speakBrowserUnit(run) {
 }
 
 function startBrowserRun(q, startIndex = 0) {
-  if (selectedVoiceWantsGpt()) {
-    setState(`当前选择的是克隆音色，${serverTtsLabel()} 暂不可用，未切换为网页机械音`);
-    return;
-  }
+  // Only reachable while the configured engine is missing or unreachable: Web
+  // Speech keeps the console audible instead of replacing a usable engine.
   // Keep the click-to-first-audio timer running across the run hand-off.
   stopLive({ clearTimer: false }); speechSynthesis.cancel();
   const run = createLiveRun('browser', q, startIndex);
@@ -1792,42 +1799,40 @@ async function resumeLive(run) {
 async function syncTtsMode() {
   const loadingId = activeViewLoading;
   const intent = audioIntent;
-  const wantsGpt = selectedVoiceWantsGpt();
   try {
     const status = await api('/tts/status');
     if (activeViewLoading !== loadingId || intent !== audioIntent) return ttsMode;
     ttsStatus = status;
     ttsCheckedAt=performance.now();
-    // `provider: browser` is also returned while the broadcast engine is warming
-    // or briefly restarting. Keep the clone route in that state and let the
-    // play action wait/retry instead of silently speaking with Web Speech.
-    ttsMode = wantsGpt && status.provider !== 'browser' && (status.configured !== false || status.provider === 'idextts2')
-      ? 'gpt-sovits'
-      : 'browser';
+    // `provider: browser` means the deployment has no engine configured at all;
+    // a warming engine keeps its provider identity and is waited for instead.
+    ttsMode = serverSpeechUnavailable() ? 'browser' : 'gpt-sovits';
   } catch {
     if (activeViewLoading !== loadingId || intent !== audioIntent) return ttsMode;
     ttsStatus = null;
-    ttsMode = wantsGpt ? 'gpt-sovits' : 'browser';
+    ttsMode = 'gpt-sovits';
   }
   const modeNode = document.querySelector('#ttsMode');
   if (modeNode) {
     modeNode.textContent = ttsMode === 'gpt-sovits'
       ? (ttsStatus?.warming_up || ttsStatus?.reachable === false ? `${ttsStatus?.provider_label || '服务端 TTS'} · 正在连接/预热` : `${ttsStatus?.provider_label || '服务端 TTS'} · PCM 实时流式播报`)
-      : 'Web Speech API（回退模式）';
+      : 'Web Speech API（语音服务不可用，回退播报）';
   }
   return ttsMode;
 }
 
 async function waitForGptReady(maxAttempts = 120) {
   const intent = audioIntent;
-  if (!selectedVoiceWantsGpt()) return false;
   if(ttsStatus?.ready && performance.now()-ttsCheckedAt < 2000)return true;
   for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
     if (intent !== audioIntent) return false;
+    // An engine that is down hands the run to Web Speech immediately instead of
+    // leaving the operator in the full retry loop; a warming engine is waited for.
+    if (serverSpeechUnavailable()) return false;
     await syncTtsMode();
     if (intent !== audioIntent) return false;
-    if (ttsStatus?.provider !== 'browser' && ttsStatus?.ready) return true;
-    if (ttsStatus?.configured === false) return false;
+    if (serverSpeechUnavailable()) return false;
+    if (ttsStatus?.ready) return true;
     if (attempt + 1 < maxAttempts) {
       setState(`正在等待 ${serverTtsLabel()} 就绪（${attempt + 1}/${maxAttempts}）`);
       await new Promise(resolve => setTimeout(resolve, 1000));
@@ -1855,12 +1860,12 @@ async function play() {
     try { await ensureAudio(); audioReady = true; } catch {}
     await syncTtsMode();
     if (intent !== audioIntent) return;
-    if (selectedVoiceWantsGpt()) {
-      const ready = await waitForGptReady();
-      if (intent !== audioIntent) return;
-      if (!ready) { stopLatencyTimer(); return setState(`${serverTtsLabel()} 暂不可用，未切换为网页机械音；请确认语音服务配置后重试`); }
-      ttsMode = 'gpt-sovits';
-    }
+    // The engine owns the broadcast voice now; Web Speech only takes over when
+    // that engine is missing or unreachable.
+    const serverReady = serverSpeechUnavailable() ? false : await waitForGptReady();
+    if (intent !== audioIntent) return;
+    ttsMode = serverReady ? 'gpt-sovits' : 'browser';
+    if (!serverReady) setState(`${serverTtsLabel()} 暂不可用，改用 Web Speech API 播报`);
     if (ttsMode === 'gpt-sovits' && !audioReady) {
       try { await ensureAudio(); } catch (error) { stopLatencyTimer(); setState('无法启动音频输出：' + error.message); return; }
     }
@@ -2049,16 +2054,16 @@ async function speakText(text) {
   audioRequestedAt=performance.now();
   startLatencyTimer();
   try {
-    if (selectedVoiceWantsGpt()) {
-      await ensureAudio();
-      if (intent !== audioIntent) return;
-      const ready = await waitForGptReady();
-      if (intent !== audioIntent) return;
-      if (!ready) { stopLatencyTimer(); return setState(`${serverTtsLabel()} 暂不可用，请检查语音服务后重试`); }
-      await startGptRun(q);
-    } else if (intent === audioIntent) {
+    const serverReady = serverSpeechUnavailable() ? false : await waitForGptReady();
+    if (intent !== audioIntent) return;
+    if (!serverReady) {
+      setState(`${serverTtsLabel()} 暂不可用，改用 Web Speech API 播报`);
       startBrowserRun(q);
+      return;
     }
+    await ensureAudio();
+    if (intent !== audioIntent) return;
+    await startGptRun(q);
   } catch (error) {
     if (intent === audioIntent) stopLatencyTimer();
     if (intent === audioIntent && error.name !== 'AbortError') setState('播报失败：' + error.message);
@@ -2461,7 +2466,7 @@ async function tests() {
     const stats = await api('/analytics');
 
     if (resultNode.isConnected) {
-      resultNode.innerHTML = `<div class="metrics"><div class="metric"><b>${rag.accuracy}%</b><span>完整依据命中 ${rag.passed}/${rag.total}</span></div><div class="metric"><b>${qa.accuracy}%</b><span>本地回答命中 ${qa.passed}/${qa.total}</span></div><div class="metric"><b>${tts.average_first_audio_ms ?? '-'} ms</b><span>模型首包平均延迟</span></div><div class="metric"><b>${tts.meets_target ? '✓ 通过' : '⚠ 需优化'}</b><span>全部首包样本 ≤3秒</span></div></div><p class="notice">首包延迟仅统计后端出音；客户端近期 ${stats.first_audio.count} 次播报，最大排程延迟 ${stats.first_audio.max_ms == null ? '暂无' : Math.round(stats.first_audio.max_ms) + ' ms'}。</p><details class="report-raw"><summary>查看完整测试明细</summary><pre>${esc(JSON.stringify({retrieval: rag, local_qa: qa, model_first_audio: tts}, null, 2))}</pre></details><a class="btn secondary" href="${API}/reports/export" download>导出运行与听测报告</a>`;
+      resultNode.innerHTML = `<div class="metrics"><div class="metric"><b>${rag.accuracy}%</b><span>完整依据命中 ${rag.passed}/${rag.total}</span></div><div class="metric"><b>${qa.accuracy}%</b><span>本地回答命中 ${qa.passed}/${qa.total}</span></div><div class="metric"><b>${tts.average_first_audio_ms ?? '-'} ms</b><span>模型首包平均延迟</span></div><div class="metric"><b>${tts.meets_target ? '✓ 通过' : '⚠ 需优化'}</b><span>全部首包样本 ≤3秒</span></div></div><p class="notice">首包延迟仅统计后端出音；客户端最近 ${stats.first_audio.count} 次播报的最大排程延迟 ${stats.first_audio.max_ms == null ? '暂无' : Math.round(stats.first_audio.max_ms) + ' ms'}。</p><details class="report-raw"><summary>查看完整测试明细</summary><pre>${esc(JSON.stringify({retrieval: rag, local_qa: qa, model_first_audio: tts}, null, 2))}</pre></details><a class="btn secondary" href="${API}/reports/export" download>导出运行与听测报告</a>`;
     }
   } catch(error) {
     if (resultNode && resultNode.isConnected) {

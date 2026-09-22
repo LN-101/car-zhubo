@@ -11,6 +11,9 @@ from . import llm_gateway
 
 router=APIRouter(prefix='/api')
 
+# 音频最大延时 reports the newest voice measurements, not a calendar window.
+FIRST_AUDIO_SAMPLE_SIZE=10
+
 
 def log_event(kind,vehicle='',question='',seconds=0,latency_ms=0,details=None,event_id=None):
     with conn() as c:
@@ -77,7 +80,19 @@ def content(did:int):
     with conn() as c:
         document=c.execute('SELECT * FROM documents WHERE id=?',(did,)).fetchone()
         if not document: raise HTTPException(404,'资料不存在')
-        chunks=[dict(x) for x in c.execute('SELECT id,content,page FROM chunks WHERE document_id=? ORDER BY id',(did,))]
+        rows=[dict(x) for x in c.execute('SELECT id,content,page,metadata FROM chunks WHERE document_id=? ORDER BY id',(did,))]
+    # One entry per indexed block. Parameter and FAQ documents store the whole
+    # block on every child row so retrieval can match a single line; listing the
+    # rows directly would show the same paragraph dozens of times.
+    chunks=[]
+    seen=set()
+    for row in rows:
+        try: metadata=json.loads(row['metadata'] or '{}')
+        except (TypeError,ValueError): metadata={}
+        key=metadata.get('parent_key') or f"row:{row['id']}"
+        if key in seen: continue
+        seen.add(key)
+        chunks.append({'id':row['id'],'page':row['page'],'title':metadata.get('title') or '正文','content':row['content']})
     return {'document':{k:document[k] for k in ['id','name','version','brand','series','year','source_url','license','valid_until']},'chunks':chunks}
 
 
@@ -100,6 +115,12 @@ def analytics(days:int=7):
     start=(datetime.now(timezone.utc)-timedelta(days=min(365,max(1,days)))).isoformat()
     with conn() as c:
         events=[dict(x) for x in c.execute('SELECT * FROM analytics_events WHERE created_at>=?',(start,))]
+        # The live latency figure follows the newest measurements instead of the
+        # calendar window: one cold start from days ago must not keep inflating
+        # the number an operator is asked to trust during a demo.
+        first=[row['latency_ms'] for row in c.execute(
+            'SELECT latency_ms FROM analytics_events WHERE kind=? ORDER BY created_at DESC,rowid DESC LIMIT ?',
+            ('first_audio',FIRST_AUDIO_SAMPLE_SIZE))]
     questions=[e for e in events if e['kind']=='question']
     vehicles={};hotspots={};questions_count={}
     for e in questions:
@@ -109,11 +130,11 @@ def analytics(days:int=7):
             label=f"{item['document_name']} · v{item.get('version',1)}"
             hotspots[label]=hotspots.get(label,0)+1
     rank=lambda values:[{'name':key,'count':value} for key,value in sorted(values.items(),key=lambda pair:pair[1],reverse=True)[:10]]
-    first=[e['latency_ms'] for e in events if e['kind']=='first_audio']
     return {'days':days,'playback_seconds':round(sum(e['seconds'] for e in events if e['kind']=='playback'),2),
             'question_count':len(questions),'revision_count':sum(e['kind']=='revision' for e in events),
             'popular_vehicles':rank(vehicles),'retrieval_hotspots':rank(hotspots),'frequent_questions':rank(questions_count),
-            'first_audio':{'count':len(first),'average_ms':round(sum(first)/len(first),1) if first else None,'max_ms':max(first) if first else None}}
+            'first_audio':{'count':len(first),'sample_size':FIRST_AUDIO_SAMPLE_SIZE,
+                           'average_ms':round(sum(first)/len(first),1) if first else None,'max_ms':max(first) if first else None}}
 
 
 @router.get('/llm/status')

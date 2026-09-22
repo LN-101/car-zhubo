@@ -12,22 +12,28 @@ class ZhuboTTSAdapter:
     def synthesize(
         self,
         text: str,
-        reference_audio: str,
+        reference_audio: str | None = None,
         speed: float = 1.0,
         volume: float = 1.0,
         tone: str = "neutral",
         intensity: float = 0.0,
+        speaker: str | None = None,
     ) -> bytes:
-        # Send audio content so voice identity does not depend on service-local
-        # speaker aliases or on a shared filesystem between the two servers.
         payload = {
             "text": text,
-            "reference_audio_base64": base64.b64encode(Path(reference_audio).read_bytes()).decode("ascii"),
             "speed": speed,
             "volume": volume,
             "tone": tone,
             "intensity": intensity,
         }
+        if reference_audio:
+            # Send audio content so voice identity does not depend on service-local
+            # speaker aliases or on a shared filesystem between the two servers.
+            payload["reference_audio_base64"] = base64.b64encode(Path(reference_audio).read_bytes()).decode("ascii")
+        else:
+            # No reference audio: keep following whatever default voice the
+            # Zhubo service was started with.
+            payload["speaker"] = speaker or "default"
         with httpx.Client(timeout=120.0, trust_env=False) as client:
             response = client.post(f"{self.base_url}/tts/synthesize", json=payload)
             response.raise_for_status()

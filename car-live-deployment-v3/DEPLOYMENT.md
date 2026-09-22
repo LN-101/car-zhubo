@@ -244,11 +244,11 @@ INDEX_TTS2_URL=http://your-remote-tts-server:8001
 ### 配置预置音色
 
 内置音色位于 `data/preset_voices/` 目录：
-- `steady.wav` - 沉稳阿川
-- `lively.wav` - 活力小桃
-- `warm.wav` - 亲切阿诚
+- `steady-0.wav` - 沉稳阿川
+- `energetic-0.wav` - 温婉小梅
+- `friendly-0.wav` - 亲切阿诚
 
-您可以替换这些文件为自己的音色样本（24kHz 单声道 WAV，5-10秒）。
+您可以替换这些文件为自己的音色样本（24kHz 单声道 WAV，3-10秒），并同步更新 catalog.json 中的 SHA-256、逐字文本与时长。
 
 ---
 

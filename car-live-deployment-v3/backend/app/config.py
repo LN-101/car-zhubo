@@ -26,6 +26,10 @@ class Settings(BaseSettings):
     tts_provider: str = "idextts2"
     # Zhubo TTS configuration
     zhubo_tts_url: str = "http://localhost:8765"
+    # Speaker the picker's 系统默认 entry uses. It is resolved by the Zhubo
+    # service against its own reference set, so the entry needs no uploaded
+    # reference audio and never falls back to browser speech.
+    zhubo_default_speaker: str = "default"
     gpt_sovits_url: str = ""
     gpt_sovits_ref_audio: str = ""
     gpt_sovits_prompt_text: str = ""

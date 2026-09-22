@@ -1296,7 +1296,7 @@ dialog, #featureDialog {
   top: 50%;
   left: 50%;
   max-width: min(900px, 90vw);
-  max-height: 85vh;
+  max-height: 90vh;
   width: 100%;
   margin: 0;
   padding: 0;
@@ -1305,7 +1305,11 @@ dialog, #featureDialog {
   background: linear-gradient(180deg, var(--surface-elevated) 0%, var(--surface) 100%);
   box-shadow: var(--shadow-lg), 0 0 60px rgba(0, 212, 255, 0.2);
   color: var(--text-secondary);
-  overflow: hidden;
+  /* Long content scrolls with the mouse wheel inside the popup. Clipping it
+     instead made the 关闭 button at the end of the dialog unreachable. */
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
   opacity: 0;
   transform: translate(-50%, -50%) scale(0.95);
   transition: opacity 0.3s cubic-bezier(0.22, 1, 0.36, 1),
@@ -1496,6 +1500,36 @@ dialog #ragResult, #featureDialog #ragResult {
   color: var(--text-secondary);
   line-height: 1.7;
   min-height: 60px;
+}
+
+/* 来源 dialog: the stored blocks keep their own frame so the text never runs
+   under the popup border. Scrolling belongs to the popup itself. */
+dialog .evidence-text, #featureDialog .evidence-text {
+  margin: 0 32px 24px;
+  padding: 6px 20px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
+dialog .evidence-text > p, #featureDialog .evidence-text > p {
+  margin: 0;
+  padding: 14px 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+dialog .evidence-text > p + p, #featureDialog .evidence-text > p + p {
+  border-top: 1px solid var(--border);
+}
+
+dialog .evidence-text > p > b, #featureDialog .evidence-text > p > b {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--tech-blue);
+  font-weight: 700;
 }
 
 #batchMessage {
@@ -1902,12 +1936,18 @@ dialog #ragResult, #featureDialog #ragResult {
   animation: glow 2s ease-in-out infinite;
 }
 
-.avatar-model-state {
+.avatar-stage-status {
   position: absolute;
   left: 24px;
   right: 24px;
   bottom: 24px;
   z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.avatar-model-state {
   padding: 14px;
   background: rgba(0, 0, 0, 0.6);
   border: 1px solid var(--border);
@@ -1916,6 +1956,14 @@ dialog #ragResult, #featureDialog #ragResult {
   font-size: 13px;
   text-align: center;
   backdrop-filter: blur(12px);
+}
+
+.avatar-model-notice {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 13px;
+  text-align: center;
+  letter-spacing: 0.02em;
 }
 
 .avatar-stage-note {

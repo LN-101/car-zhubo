@@ -63,6 +63,18 @@ def test_selected_voice_is_used_in_both_endpoints(zhubo, endpoint, voice_id):
 
 
 @pytest.mark.parametrize("endpoint", ["synthesize", "stream"])
+def test_system_default_voice_uses_the_service_default_speaker(zhubo, endpoint):
+    """系统默认 has no reference audio and must not need one."""
+    adapter, _, db = zhubo
+    db.execute("INSERT INTO voices VALUES ('browser-default', '', '', 'zh', 'ready', '', 'browser')")
+    response = TestClient(main.app).post(f"/api/tts/{endpoint}", json={"text": "验证音色。", "voice_id": "browser-default"})
+    assert response.status_code == 200
+    assert response.content[:4] == b"RIFF"
+    assert adapter.synthesize.call_args.kwargs["reference_audio"] is None
+    assert adapter.synthesize.call_args.kwargs["speaker"] == main.settings.zhubo_default_speaker
+
+
+@pytest.mark.parametrize("endpoint", ["synthesize", "stream"])
 def test_unknown_voice_fails_before_audio_headers(zhubo, endpoint):
     adapter, _, _ = zhubo
     response = TestClient(main.app).post(f"/api/tts/{endpoint}", json={"text": "验证", "voice_id": "missing"})
@@ -89,6 +101,20 @@ def test_clone_probe_and_prime_use_zhubo(zhubo, monkeypatch):
     status.assert_called_once_with("voice-test", "ready", "通过", 1)
     db.execute("UPDATE voices SET synthesis_status='ready'")
     assert main.prime_voice("voice-test")["ready"] is True
+
+
+def test_latency_benchmark_measures_the_zhubo_engine(zhubo, monkeypatch):
+    """效果验证 must not fall through to the GPT-SoVITS branch."""
+    adapter, ref, _ = zhubo
+    monkeypatch.setattr(main, "_preferred_clone_voice_id", lambda: "voice-test")
+    report = TestClient(main.app).post("/api/tests/tts").json()
+    assert report["provider"] == "zhubo"
+    assert report["voice_id"] == "voice-test"
+    assert report["samples"] == 3 and len(report["sample_results"]) == 3
+    assert all(result["ok"] for result in report["sample_results"])
+    assert report["average_first_audio_ms"] is not None and report["meets_target"] is True
+    assert adapter.synthesize.call_count == 3
+    assert adapter.synthesize.call_args.kwargs["reference_audio"] == str(ref)
 
 
 def test_status_does_not_claim_unhealthy_service_is_ready(zhubo):
@@ -120,3 +146,15 @@ def test_adapter_transports_audio_content_without_speaker_alias(monkeypatch, tmp
     client_class = httpx.Client
     monkeypatch.setattr(httpx, "Client", lambda **kwargs: client_class(transport=httpx.MockTransport(handle), **kwargs))
     assert ZhuboTTSAdapter().synthesize("测试", str(reference))[:4] == b"RIFF"
+
+
+def test_adapter_uses_the_service_default_speaker_without_reference_audio(monkeypatch):
+    def handle(request):
+        import json
+        payload = json.loads(request.content)
+        assert "reference_audio_base64" not in payload
+        assert payload["speaker"] == "default"
+        return httpx.Response(200, content=make_wav())
+    client_class = httpx.Client
+    monkeypatch.setattr(httpx, "Client", lambda **kwargs: client_class(transport=httpx.MockTransport(handle), **kwargs))
+    assert ZhuboTTSAdapter().synthesize("测试")[:4] == b"RIFF"

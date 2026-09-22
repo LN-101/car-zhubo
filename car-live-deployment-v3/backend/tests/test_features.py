@@ -38,6 +38,18 @@ def test_personal_data_is_removed_from_stored_file_and_index(client):
     assert len(chunk['embedding']) == dimension() * 4
 
 
+def test_source_view_lists_each_indexed_block_once(client):
+    # Parameter documents store the whole block on every child row so a single
+    # line stays retrievable; the 来源 view must not repeat it per line.
+    did=upload(client,'\n'.join(f'参数{i}是：{i}' for i in range(1,40)))
+    with conn() as c:
+        stored=c.execute('SELECT COUNT(*) FROM chunks WHERE document_id=?',(did,)).fetchone()[0]
+    chunks=client.get(f'/api/knowledge/{did}/content').json()['chunks']
+    assert stored>len(chunks)>0
+    assert len({chunk['content'] for chunk in chunks})==len(chunks)
+    assert all(chunk['title'] for chunk in chunks)
+
+
 def test_batch_metadata_versions_and_atomic_missing_id(client):
     ids=[upload(client,'轴距(mm)是：2700',f'car{i}.txt') for i in range(2)]
     response=client.patch('/api/knowledge/batch',json={'ids':ids,'license':'自有授权','source_url':'https://example.com/vehicle'})
@@ -69,6 +81,16 @@ def test_analytics_counts_real_events_and_deduplicates_retries(client):
     data=client.get('/api/analytics').json()
     assert data['question_count']==1 and data['playback_seconds']==5
     assert data['retrieval_hotspots'][0]['count']==1
+
+
+def test_audio_max_latency_uses_the_newest_samples(client):
+    # Twelve measurements in order; only the newest ten may drive the live
+    # 音频最大延时 figure.
+    for index,latency in enumerate([9000,8000,500,600,700,800,900,1000,1100,1200,1300,1400]):
+        assert client.post('/api/analytics/events',json={'id':f'audio{index}','kind':'first_audio','latency_ms':latency}).status_code==200
+    first=client.get('/api/analytics').json()['first_audio']
+    assert first['count']==10 and first['sample_size']==10
+    assert first['max_ms']==1400 and first['average_ms']==950
 
 
 def test_no_fake_human_scores_and_real_scores_are_validated(client):

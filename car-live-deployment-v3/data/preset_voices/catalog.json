@@ -37,23 +37,18 @@
     },
     {
       "id": "energetic",
-      "name": "活力小桃",
+      "name": "温婉小梅",
       "gender": "女声",
-      "tag": "活力介绍",
-      "description": "适合新车亮点与直播开场。",
-      "prompt_text": "没想到没想到，胡桃我现在力如泉，心似雄鹰，非常有自信哦。",
+      "tag": "温婉讲解",
+      "description": "适合娓娓道来的车型讲解与配置介绍。",
+      "prompt_text": "生命的编组中，父母平等，因而我的名字取了二者的姓氏。",
       "prompt_lang": "zh",
       "model_profile": "base",
       "assets": [
         {
           "file": "energetic-0.wav",
-          "sha256": "f342085ab916bce4568162495996c51335c27d1b0213c5bea393a39bf5708d41",
-          "duration_seconds": 6.365
-        },
-        {
-          "file": "energetic-1.wav",
-          "sha256": "0d1e70360dd86e306d5728516766ad0fcae2f7e928a01c9b9838e2c9648b5996",
-          "duration_seconds": 7.405
+          "sha256": "a9df650da15211be617c2b7c44867bd92d0b9c15ea258f1b7e778320ce444076",
+          "duration_seconds": 5.997
         }
       ],
       "sampling": {
@@ -64,9 +59,9 @@
         "repetition_penalty": 1.35
       },
       "source": {
-        "type": "existing-project-sample",
-        "original_name": "胡桃",
-        "original_voice_id": "voice-ff9f6ad7787d"
+        "type": "user-provided",
+        "original_name": "阮·梅（VO_ZH_Archive_Ruan_Mei_5.ogg）",
+        "original_voice_id": ""
       }
     },
     {

@@ -95,7 +95,10 @@
       if(id){const show=document.createElement('button');show.className='btn secondary';show.textContent='来源';show.onclick=async()=>{
         const data=await api(`/knowledge/${id}/content`);
         const d=data.document;
-        showModal(`<h2>${esc(d.name)}</h2><p>v${d.version} · ${esc(d.license)} · 有效期：${esc(d.valid_until||'未填写')}</p><p>${esc(d.source_url||'尚未填写原始来源')}</p><div class="evidence-text">${data.chunks.map(x=>`<p>${x.page?'第'+x.page+'页 · ':''}${esc(x.content)}</p>`).join('')}</div><button class="btn" data-close>关闭</button>`);
+        // One paragraph per indexed block; a parameter dump stores the same
+        // block on every line so listing rows would repeat it dozens of times.
+        const blocks=data.chunks.map(x=>`<p><b>${x.page?`第${x.page}页 · `:''}${esc(x.title||'正文')}</b>${esc(x.content)}</p>`).join('');
+        showModal(`<h2>${esc(d.name)}</h2><p>v${d.version} · ${esc(d.license)} · 有效期：${esc(d.valid_until||'未填写')}</p><p>${esc(d.source_url||'尚未填写原始来源')}</p><div class="evidence-text">${blocks}</div><p class="dialog-actions"><button class="btn" data-close>关闭</button></p>`);
       };row.lastElementChild.append(show);}
     });
     document.querySelector('#selectAllDocuments').onchange=e=>table.querySelectorAll('.document-select').forEach(n=>{if(!n.closest('tr').hidden)n.checked=e.target.checked;});
@@ -146,7 +149,7 @@
     const loadingId=beginViewLoad('analytics');if(!loadingId)return;
     const data=await api('/analytics');
     if(activeViewLoading!==loadingId)return;
-    layout('直播统计','最近 7 天的实际讲解时长、观众咨询与知识库检索热点。',`<div class="metrics"><div class="metric"><b>${(data.playback_seconds/60).toFixed(1)} 分钟</b><span>实际讲解时长</span></div><div class="metric"><b>${data.question_count}</b><span>观众咨询</span></div><div class="metric"><b>${data.revision_count}</b><span>动态改稿</span></div><div class="metric"><b>${data.first_audio.max_ms==null?'暂无':(data.first_audio.max_ms/1000).toFixed(2)+' 秒'}</b><span>音频最大延时</span><small>点击播报 → 首个音频片段可听的端到端最大耗时（按音频排程和设备输出延迟估算）。样本 ${data.first_audio.count} 次；包含点击后的 TTS 预热等待，不含后台预热与试听。</small></div></div>${rank('高频咨询车型',data.popular_vehicles)}${rank('知识库检索热点',data.retrieval_hotspots)}${rank('高频问题',data.frequent_questions)}<p><a class="btn secondary" href="${API}/reports/export" download>导出运行与听测报告</a></p>`,{eyebrow:'扩展能力',tag:'近 7 天'});
+    layout('直播统计','最近 7 天的实际讲解时长、观众咨询与知识库检索热点。',`<div class="metrics"><div class="metric"><b>${(data.playback_seconds/60).toFixed(1)} 分钟</b><span>实际讲解时长</span></div><div class="metric"><b>${data.question_count}</b><span>观众咨询</span></div><div class="metric"><b>${data.revision_count}</b><span>动态改稿</span></div><div class="metric"><b>${data.first_audio.max_ms==null?'暂无':(data.first_audio.max_ms/1000).toFixed(2)+' 秒'}</b><span>音频最大延时</span><small>点击播报 → 首个音频片段可听的端到端最大耗时（按音频排程和设备输出延迟估算），取最近 ${data.first_audio.sample_size} 次播报中的最大值（当前样本 ${data.first_audio.count} 次）；包含点击后的 TTS 预热等待，不含后台预热与试听。</small></div></div>${rank('高频咨询车型',data.popular_vehicles)}${rank('知识库检索热点',data.retrieval_hotspots)}${rank('高频问题',data.frequent_questions)}<p><a class="btn secondary" href="${API}/reports/export" download>导出运行与听测报告</a></p>`,{eyebrow:'扩展能力',tag:'近 7 天'});
   }
   async function modelView(){
     const loadingId=beginViewLoad('model');if(!loadingId)return;

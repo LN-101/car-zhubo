@@ -106,7 +106,8 @@ test('stopping during session creation prevents delayed browser speech', async (
   h.fetch(() => pending.promise);
   const playback = h.run('play()');
   h.run('stop()');
-  pending.resolve(response({id: 'session-1'}));
+  // No engine configured: Web Speech is the documented fallback path.
+  pending.resolve(response({provider: 'browser', id: 'session-1'}));
   await playback;
   assert.equal(h.speech.length, 0);
   assert.equal(h.nodes['#play'].disabled, false);
@@ -120,7 +121,7 @@ test('repeat play clicks create one session and one speech run', async () => {
   const first = h.run('play()');
   await h.run('play()');
   assert.equal(h.requests.length, 1);
-  pending.resolve(response({id: 'session-1'}));
+  pending.resolve(response({provider: 'browser', id: 'session-1'}));
   await first;
   assert.equal(h.speech.length, 1);
   assert.equal(h.nodes['#play'].disabled, true);
@@ -163,6 +164,36 @@ test('draft storage retains empty scripts and controls across view changes', () 
   assert.equal(h.nodes['#speed'].value, '1.25');
   assert.equal(h.nodes['#play'].disabled, true);
 });
+
+test('a draft that stored the old greeting follows the packaged script, edits do not', () => {
+  const h = harness();
+  const packaged = '欢迎各位老板，今天为大家介绍欧拉 5 EV 2026 款 580km 激光雷达版。';
+  h.storage.set('carLiveStudioDraft', JSON.stringify({script: '老板，今天为大家介绍欧拉 5 EV 2026 款 580km 激光雷达版。'}));
+  h.run('initializeStudioDraft()');
+  assert.equal(h.nodes['#script'].value, packaged);
+  h.storage.set('carLiveStudioDraft', JSON.stringify({script: '老板，这是我自己写的稿子。'}));
+  h.run('initializeStudioDraft()');
+  assert.equal(h.nodes['#script'].value, '老板，这是我自己写的稿子。');
+});
+
+test('clicking a played item explains the lock with a popup', () => {
+  const h = harness();
+  const notices = [];
+  h.context.alert = message => notices.push(message);
+  const row = {dataset: {id: '1'}, onclick: null};
+  h.nodes['#itemRows'] = {innerHTML: '', isConnected: true, querySelectorAll: () => [row]};
+  h.nodes['#itemHint'] = {textContent: '', isConnected: true};
+  h.nodes['#itemId'] = {value: '', isConnected: true};
+  h.nodes['#itemText'] = {value: '改到一半的文字', isConnected: true};
+  h.run("sessionItems = [{id:1,status:'已播放',text:'第一条'},{id:2,status:'待播',text:'第二条'}]; renderItemTable();");
+  assert.equal(typeof row.onclick, 'function');
+  row.onclick();
+  assert.deepEqual(notices, ['该条目已播报，不能修改或删除。请在后续待播条目中修改，或新增话术。']);
+  assert.equal(h.nodes['#itemText'].value, '');
+  assert.match(h.nodes['#itemHint'].textContent, /已播报/);
+  assert.equal(h.nodes['#itemId'].value, 1);
+});
+
 
 test('failed revision keeps the current audio queue and restores the save button', async () => {
   const h = harness();
@@ -249,10 +280,12 @@ test('script and answer timers stop on failures, stop and navigation', async () 
   h.run('stopCurrentView()');
   assert.equal(h.run('ttsLatencyTimer'),null);
   assert.equal(h.nodes['#ttsLatency'].textContent,'');
-  h.run("selectedVoiceWantsGpt=()=>true;ensureAudio=async()=>{};waitForGptReady=async()=>false;");
+  h.run("ensureAudio=async()=>{};waitForGptReady=async()=>false;");
   await h.run("speakText('回答内容。')");
-  assert.equal(h.run('ttsLatencyTimer'),null);
-  assert.equal(h.nodes['#ttsLatency'].textContent,'');
+  // An engine that never becomes ready hands the answer to Web Speech, so the
+  // timer keeps running until the first utterance starts.
+  assert.equal(h.speech.length, 1);
+  assert.match(h.nodes['#playstate'].textContent,/Web Speech/);
   h.run('startLatencyTimer();stopLatencyTimer(1234)');
   assert.equal(h.nodes['#ttsLatency'].textContent,'✓ 首音频 1.23s');
   h.run('stop()');
@@ -262,7 +295,7 @@ test('script and answer timers stop on failures, stop and navigation', async () 
 test('ready answer starts its timer at the click and retains that timestamp',async()=>{
   const h=harness(),waiting=deferred();
   h.context.readiness=waiting.promise;
-  h.run('selectedVoiceWantsGpt=()=>true;ttsStatus={provider:"gpt-sovits",ready:true};ensureAudio=async()=>{};waitForGptReady=()=>readiness;');
+  h.run('ttsStatus={provider:"gpt-sovits",ready:true};ensureAudio=async()=>{};waitForGptReady=()=>readiness;');
   const task=h.run("speakText('回答内容。')");
   const clicked=h.run('audioRequestedAt');
   assert.match(h.nodes['#ttsLatency'].textContent,/0.0s/);

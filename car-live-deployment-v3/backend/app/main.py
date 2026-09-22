@@ -152,6 +152,23 @@ def _tts_global_reference_audio() -> str:
     )
 
 
+# The picker's 系统默认 entry has no uploaded reference audio. It used to be
+# spoken by the browser; it must resolve to the engine's own default speaker
+# instead.
+SYSTEM_VOICE_ID = "browser-default"
+
+
+def _zhubo_voice_route(voice_id: str):
+    """Return the ``(reference_audio, speaker)`` pair for the Zhubo service.
+
+    ``speaker`` is only meaningful without reference audio, which keeps 系统默认
+    independent of the service's reference directory and of any local file.
+    """
+    if voice_id == SYSTEM_VOICE_ID:
+        return None, settings.zhubo_default_speaker
+    return _voice_config(voice_id)[0], None
+
+
 @asynccontextmanager
 async def lifespan(_app: FastAPI):
     init_db()
@@ -1376,9 +1393,11 @@ def _warm_single_voice(voice_id: str):
         VOICE_WARMING.add(voice_id)
         try:
             with _tts_lock(priority="background", timeout=30):
+                reference_audio, speaker = _zhubo_voice_route(voice_id)
                 audio = _get_zhubo_adapter().synthesize(
                     text=CLONE_VALIDATION_TEXT,
-                    reference_audio=_voice_config(voice_id)[0],
+                    reference_audio=reference_audio,
+                    speaker=speaker,
                 )
             probe = _probe_audio_payload(audio)
             if probe["status"] != "ready":
@@ -2518,7 +2537,7 @@ def synthesize_tts(req: TTSRequest):
     provider = _tts_provider()
     
     if provider == "zhubo":
-        _voice_config(req.voice_id)
+        reference_audio, speaker = _zhubo_voice_route(req.voice_id)
         try:
             adapter = _get_zhubo_adapter()
             if adapter is None:
@@ -2526,7 +2545,8 @@ def synthesize_tts(req: TTSRequest):
             
             audio = adapter.synthesize(
                 text=normalize_tts_text(req.text),
-                reference_audio=_voice_config(req.voice_id)[0],
+                reference_audio=reference_audio,
+                speaker=speaker,
                 speed=req.speed_factor,
                 volume=req.volume,
                 tone=req.tone,
@@ -2571,7 +2591,7 @@ async def stream_tts(req: TTSRequest, request: Request):
     provider = _tts_provider()
     
     if provider == "zhubo":
-        reference_audio = _voice_config(req.voice_id)[0]
+        reference_audio, speaker = _zhubo_voice_route(req.voice_id)
         units = _tts_stream_units(req)
 
         async def zhubo_iterator():
@@ -2590,6 +2610,7 @@ async def stream_tts(req: TTSRequest, request: Request):
                                 adapter.synthesize,
                                 text=normalize_tts_text(unit),
                                 reference_audio=reference_audio,
+                                speaker=speaker,
                                 speed=req.speed_factor,
                                 volume=req.volume,
                                 tone=req.tone,
@@ -3089,7 +3110,7 @@ def prime_voice(voice_id: str):
         raise HTTPException(404, "音色不存在")
     if _tts_provider() == "zhubo":
         _ensure_tts_ready()
-        _voice_config(voice_id)
+        _zhubo_voice_route(voice_id)
         _prime_voice_profile(voice_id)
         return {"id": voice_id, "profile": "zhubo", "warming": voice_id in VOICE_WARMING, "ready": voice_id in VOICE_WARMED}
     profile = _voice_model_profile(voice_id)
@@ -3653,6 +3674,48 @@ def test_qa():
 @app.post("/api/tests/tts")
 def test_tts():
     _ensure_tts_ready()
+    if _tts_provider() == "zhubo":
+        # Measure the same first live unit the console streams first, through
+        # the same adapter call, so the reported latency is the real
+        # click-to-first-audio cost of the Zhubo engine.
+        samples = ["欢迎来到汽车直播间。", "今天为大家介绍这款车型的续航和智能配置。", "如果你想了解购车政策，可以在评论区留言。"]
+        voice_id = _preferred_clone_voice_id()
+        reference_audio, speaker = _zhubo_voice_route(voice_id)
+        latencies = []
+        sample_results = []
+        with _foreground_ticket():
+            for sample in samples:
+                text = _tts_stream_units(TTSRequest(text=sample))[0]
+                start = time.perf_counter()
+                try:
+                    with _tts_lock(priority="foreground"):
+                        audio = _get_zhubo_adapter().synthesize(
+                            text=normalize_tts_text(text),
+                            reference_audio=reference_audio,
+                            speaker=speaker,
+                        )
+                    if len(audio) <= 128:
+                        raise RuntimeError("未收到可播放音频数据")
+                    latency = round((time.perf_counter() - start) * 1000, 1)
+                    latencies.append(latency)
+                    sample_results.append({"text": text, "first_audio_ms": latency, "ok": True})
+                except Exception as exc:
+                    latencies.append(None)
+                    sample_results.append({"text": text, "first_audio_ms": None, "ok": False, "error": str(exc)[:200]})
+        valid = [x for x in latencies if x is not None]
+        avg = round(sum(valid) / len(valid), 1) if valid else None
+        return {
+            "provider": "zhubo",
+            "samples": len(samples),
+            "voice_id": voice_id,
+            "sample_results": sample_results,
+            "latencies_ms": latencies,
+            "first_audio_latencies_ms": latencies,
+            "average_first_audio_ms": avg,
+            "average_ms": avg,
+            "first_audio_target_ms": 3000,
+            "meets_target": bool(len(valid) == len(samples) and max(valid) <= 3000),
+        }
     if _tts_provider() == "idextts2":
         samples = ["欢迎来到汽车直播间。", "今天为大家介绍这款车型的续航和智能配置。", "如果你想了解购车政策，可以在评论区留言。"]
         voice_id = _preferred_clone_voice_id()
